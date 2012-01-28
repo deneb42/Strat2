@@ -12,6 +12,8 @@ public final class R {
     }
     public static final class drawable {
         public static final int logo=0x7f020000;
+        public static final int logo2=0x7f020001;
+        public static final int logo3=0x7f020002;
     }
     public static final class id {
         public static final int bConnect=0x7f050005;

@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:icon="@drawable/logo"
+        android:icon="@drawable/logo3"
         android:label="Strat" 
         android:debuggable="true">
         

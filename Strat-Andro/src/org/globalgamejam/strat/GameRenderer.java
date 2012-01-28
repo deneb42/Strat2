@@ -1,5 +1,7 @@
 package org.globalgamejam.strat;
 
+import android.util.Log;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
@@ -19,6 +21,10 @@ public class GameRenderer implements ApplicationListener{
 						posiY = {-184, -248, -372, -460, -372, -248} ;
 	public static int halfW, h;
 	public static String PATH_IMG = "img/";
+	
+	//Interface
+	private int selected = -1;
+	
 	
 	public void create() {
 		// TODO Auto-generated method stub
@@ -46,6 +52,52 @@ public class GameRenderer implements ApplicationListener{
 		int i;
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		if(Gdx.input.isTouched())
+		{
+			int x = Gdx.input.getX(), y = Gdx.input.getY();
+			int select = -1;
+			//Log.i("colision", "collision au " + "x " + x + " y : " + y);
+			
+			for(i=0; i< NB_JOUEURS;i++)
+			{
+				if(collision(x, y, avatars[i].getX(), avatars[i].getY(),avatars[i].getWidth(), avatars[i].getHeight()))
+				{
+					select = i;
+					Log.i("colision", "collision avec  " + select);
+					//Log.i("coordonnees", "x : " + avatars[select].getX() + "y : " + avatars[select].getY() +
+					//					 "w : "+ avatars[select].getWidth() + "h : " + avatars[select].getHeight());
+					
+				}
+			}
+			
+			if(select != -1 && select != selected)
+			{
+				if(selected == -1)
+				{
+					selected=select;
+					Log.i("setSelected", " new selection : " + selected);
+				}
+				else
+				{
+					Log.i("setSelect", " new selection : " + selected);
+					
+					//if(select != selected)
+					{
+						if(selected == id)
+							Log.i("action", "transfert de piere du joueur vers " + select);
+						else if(select == id)
+							Log.i("action", "transfert de piere vers le joueur de la part de " + select);
+						else
+							Log.i("action", "action spéciale de " + selected + "vers " + select);
+						selected=-1;
+					}
+					
+				}
+			}
+			
+		}
+		
 		
 		batch.begin();
 			/* LIFEBAR */ 
@@ -103,11 +155,24 @@ public class GameRenderer implements ApplicationListener{
 		for(int i=0;i<NB_SPRITE_BLOCKBAR;i++)
 			blockBar[i] = new Sprite(new TextureRegion(texBlockBar, (i%4)*64, (i/4)*32, 64, 32));
 	}
-
+	
 	public void dispose() {}
 	public void pause()  {}
 	public void resize(int arg0, int arg1)  {}
 	public void resume()  {
 		render();
+	}
+	
+	private boolean collision(int pX, int pY, float cX, float cY, float cW, float cH) {
+		if(pX<cX)
+			return false;
+		if(pX > cX+cW)
+			return false;
+		if(pY<cY)
+			return false;
+		if(pY > cY+cH)
+			return false;
+		
+		return true;
 	}
 }
