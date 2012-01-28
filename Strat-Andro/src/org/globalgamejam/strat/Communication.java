@@ -59,7 +59,7 @@ public class Communication {// extends Service {
 	public void stealStone(int who) {
 		byte[] msg = new byte[2];
 		msg[0] = STEAL_STONE;
-		msg[1] = (byte) who;
+		msg[1] = (byte) (who-1);
 		try {
 			ostream.write(msg);
 		} catch (IOException e) {
@@ -72,7 +72,7 @@ public class Communication {// extends Service {
 	public void giveStone(int who) {
 		byte[] msg = new byte[2];
 		msg[0] = GIVE_STONE;
-		msg[1] = (byte) who;
+		msg[1] = (byte) (who-1);
 		try {
 			ostream.write(msg);
 		} catch (IOException e) {

@@ -54,13 +54,13 @@ public class GameRenderer implements ApplicationListener {
 
 		loadTextures();
 		
-		if(firstLaunch)
+		//if(firstLaunch)
 		{
 			for (int i = 0; i < 6; i++) {
 				posiX[i] += halfW;
 				posiY[i] += h;
 			}
-			firstLaunch=false;
+			//firstLaunch=false;
 		}
 	}
 
