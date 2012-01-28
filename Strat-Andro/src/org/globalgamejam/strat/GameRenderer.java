@@ -35,8 +35,8 @@ public class GameRenderer implements ApplicationListener {
 		
 
 	public GameRenderer(String host, int port) throws IOException {
-		//com = new Communication(host, port);
-		//com.start();
+		com = new Communication(host, port);
+		com.start();
 	}
 
 	public void create() {
@@ -65,17 +65,17 @@ public class GameRenderer implements ApplicationListener {
 	}
 
 	public void render() {
-		int nbPa = 3;//com.getActions();
-		int nbBlock = 4;//= com.getStones();
-		int id = 5; // com.getId();
+		int nbPa = com.getActions();
+		int nbBlock = com.getStones();
+		int id = com.getId();
 		int i;
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		//if (!com.isConnected()) return;
+		if (!com.isConnected()) return;
 
-		//if(com.getStatus()!=0) // beark caca !
-			//return;
+		if(com.getStatus()!=0) // beark caca !
+			return;
 		
 		
 		if(Gdx.input.isTouched())
