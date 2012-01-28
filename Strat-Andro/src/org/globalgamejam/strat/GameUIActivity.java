@@ -16,6 +16,7 @@ public class GameUIActivity extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		
 		try {
+			//GameRenderer gr = new GameRenderer(savedInstanceState.getString("host"), savedInstanceState.getInt("port"));
 			GameRenderer gr = new GameRenderer("192.168.1.77", 50000);
 			initialize(gr, false);
 		} catch (IOException ex) {

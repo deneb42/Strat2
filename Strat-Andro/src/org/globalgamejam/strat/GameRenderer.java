@@ -25,6 +25,7 @@ public class GameRenderer implements ApplicationListener {
 	private static int[] posiX = { -84, +128, +64, -80, -228, -292 }, posiY = {
 			-184, -248, -372, -460, -372, -248 };
 	public static int halfW, h;
+	private boolean firstLaunch = true;
 	public static String PATH_IMG = "img/";
 
 	private Communication com;
@@ -34,14 +35,14 @@ public class GameRenderer implements ApplicationListener {
 		
 
 	public GameRenderer(String host, int port) throws IOException {
-		com = new Communication(host, port);
-		com.start();
+		//com = new Communication(host, port);
+		//com.start();
 	}
 
 	public void create() {
-		// TODO Auto-generated method stub
+		
 		halfW = Gdx.graphics.getWidth() / 2;
-		h = Gdx.graphics.getHeight();
+		h = Gdx.graphics.getHeight(); // helps the placement of the avatars
 
 		batch = new SpriteBatch();
 
@@ -52,25 +53,29 @@ public class GameRenderer implements ApplicationListener {
 		bg = new Sprite(new Texture(PATH_IMG + "bgPhone.png"));
 
 		loadTextures();
-
-		for (int i = 0; i < 6; i++) {
-			posiX[i] += halfW;
-			posiY[i] += h;
+		
+		if(firstLaunch)
+		{
+			for (int i = 0; i < 6; i++) {
+				posiX[i] += halfW;
+				posiY[i] += h;
+			}
+			firstLaunch=false;
 		}
 	}
 
 	public void render() {
-		int nbPa = com.getActions();
-		int nbBlock = com.getStones();
-		int id = com.getId();
+		int nbPa = 3;//com.getActions();
+		int nbBlock = 4;//= com.getStones();
+		int id = 5; // com.getId();
 		int i;
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		if (!com.isConnected()) return;
+		//if (!com.isConnected()) return;
 
-		if(com.getStatus()!=0) // beark caca !
-			return;
+		//if(com.getStatus()!=0) // beark caca !
+			//return;
 		
 		
 		if(Gdx.input.isTouched())
@@ -154,10 +159,10 @@ public class GameRenderer implements ApplicationListener {
 
 		avatars[id].setPosition(posiX[0], posiY[0]);
 		avatars[id].draw(batch);
-		for (i = 2; i < NB_JOUEURS; i++) {
-			avatars[(id + i) % NB_JOUEURS].setPosition(posiX[i], posiY[i]);
-			avatars[(id + i) % NB_JOUEURS].setScale(0.8f);
-			avatars[(id + i) % NB_JOUEURS].draw(batch);
+		for (i = 0; i < NB_JOUEURS-2; i++) {
+			avatars[(id+i) % (NB_JOUEURS-1) + 1].setPosition(posiX[i+1], posiY[i+1]);
+			avatars[(id+i) % (NB_JOUEURS-1) + 1].setScale(0.8f);
+			avatars[(id+i) % (NB_JOUEURS-1) + 1].draw(batch);
 		}
 
 		batch.end();
@@ -187,11 +192,6 @@ public class GameRenderer implements ApplicationListener {
 					(i % 4) * 64, (i / 4) * 32, 64, 32));
 	}
 
-	public void dispose() {}
-	public void pause()  {}
-	public void resize(int arg0, int arg1)  {}
-	public void resume()  {}
-	
 	private boolean collision(int pX, int pY, float cX, float cY, float cW, float cH) {
 		if(pX<cX)
 			return false;
@@ -204,4 +204,9 @@ public class GameRenderer implements ApplicationListener {
 		
 		return true;
 	}
+
+	public void dispose() {}
+	public void pause()  {}
+	public void resize(int arg0, int arg1)  {}
+	public void resume()  {}
 }
