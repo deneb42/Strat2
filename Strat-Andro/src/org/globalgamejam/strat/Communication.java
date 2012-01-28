@@ -95,7 +95,7 @@ public class Communication {// extends Service {
 	}
 
 	public int getId() {
-		return iD;
+		return iD+1;
 	}
 
 	public int getTotalId() {

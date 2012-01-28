@@ -15,7 +15,6 @@ public class ClientActivity extends Activity {
 
 	private EditText etIpDest, etPortDest;
 	private Button bConnect;
-	private Communication com;
 
 	protected Socket sock;
 
@@ -23,7 +22,7 @@ public class ClientActivity extends Activity {
 		// Create the interface
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.client_layout);
-		Log.d("Strat", "Client : client opened");
+		Log.d("Strat", "Application opened");
 
 		// Retrieving of the UI handlers
 		etIpDest = (EditText) findViewById(R.id.etIpDest);
@@ -36,18 +35,14 @@ public class ClientActivity extends Activity {
 			public void onClick(View arg0) {
 				launchUI();
 				finish();
-				/*
-				com = new Communication(etPortDest.getText().toString(), Integer.parseInt(etPortDest.getText().toString()));
-				com.start();
-				Log.v("test","test");
-				com.stealStone(0);
-				*/
 			}
 		});  
     }
     
     private void launchUI() {
     	Intent intent = new Intent(this, GameUIActivity.class);
-		startActivity(intent);
+    	intent.putExtra("host", etPortDest.getText().toString());
+    	intent.putExtra("port", Integer.parseInt(etPortDest.getText().toString()));
+    	startActivity(intent);
     }
 }
