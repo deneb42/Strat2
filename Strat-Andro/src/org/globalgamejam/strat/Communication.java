@@ -35,19 +35,20 @@ public class Communication {// extends Service {
 	private static final int DISCONNECT = 4;
 	private static final int END_GAME = 5;
 
-	public Communication(String host, int port) {
+	public Communication(String host, int port) throws IOException {
 		try {
 			this.socket = new Socket(host, port);
 			ostream = socket.getOutputStream();
 			Log.d("Communication", "Socket connected");
-		} catch (Exception ex) {
+		} catch (IOException ex) {
 			Log.v("Communication",
 					"Unable to connect socket " + ex.getLocalizedMessage());
+			throw ex;
 		}
 		alives = new boolean[MAX_CLIENTS];
 		for (int i = 0; i < MAX_CLIENTS; i++)
 			alives[i] = false;
-		iD = 0;
+		iD = -1;
 		totalId = 0;
 		stones = 0;
 		actions = 0;
@@ -113,12 +114,16 @@ public class Communication {// extends Service {
 	public int getBonus() {
 		return bonus;
 	}
-	
+
 	// Return 0 : Game in progress
 	// Return 1 : Win
 	// Return 2 : Lost
 	public int getStatus() {
 		return status;
+	}
+
+	public boolean isConnected() {
+		return (iD != -1);
 	}
 
 	public boolean isAlive(int id) {
@@ -195,8 +200,10 @@ public class Communication {// extends Service {
 						break;
 					case END_GAME:
 						tmp = istream.read();
-						if (tmp == 1) status = 1;
-						else if (tmp == 0) status = 2;
+						if (tmp == 1)
+							status = 1;
+						else if (tmp == 0)
+							status = 2;
 						break;
 					}
 				}

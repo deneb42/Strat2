@@ -1,5 +1,7 @@
 package org.globalgamejam.strat;
 
+import java.io.IOException;
+
 import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -10,10 +12,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+
 public class GameRenderer implements ApplicationListener {
 
 	private SpriteBatch batch;
 	private Sprite[] bonus, avatars, lifeBar, blockBar;
+	private Sprite bg;
 	Texture texAvatar, texBonus, texLifeBar, texBlockBar;
 	private static final int NB_JOUEURS = 7, NB_BONUS = 5,
 			NB_SPRITE_LIFEBAR = 2, NB_SPRITE_BLOCKBAR = 7;
@@ -29,7 +33,7 @@ public class GameRenderer implements ApplicationListener {
 		private int selected = -1;
 		
 
-	public GameRenderer(String host, int port) {
+	public GameRenderer(String host, int port) throws IOException {
 		com = new Communication(host, port);
 		com.start();
 	}
@@ -45,6 +49,7 @@ public class GameRenderer implements ApplicationListener {
 		texBonus = new Texture(PATH_IMG + "bonus.png");
 		texLifeBar = new Texture(PATH_IMG + "lifebar.png");
 		texBlockBar = new Texture(PATH_IMG + "blockbar.png");
+		bg = new Sprite(new Texture(PATH_IMG + "bgPhone.png"));
 
 		loadTextures();
 
@@ -59,9 +64,11 @@ public class GameRenderer implements ApplicationListener {
 		int nbBlock = com.getStones();
 		int id = com.getId();
 		int i;
-
+		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
+		if (!com.isConnected()) return;
+
 		if(com.getStatus()!=0) // beark caca !
 			return;
 		
@@ -120,6 +127,8 @@ public class GameRenderer implements ApplicationListener {
 		}
 		
 		batch.begin();
+		bg.draw(batch);
+		
 		/* LIFEBAR */
 		for (i = 0; i < nbPa - 1; i++) {
 			lifeBar[0].setPosition(i * (lifeBar[0].getWidth()),
