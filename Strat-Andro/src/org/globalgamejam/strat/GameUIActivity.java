@@ -14,17 +14,20 @@ public class GameUIActivity extends AndroidApplication {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
+
 		try {
-			//GameRenderer gr = new GameRenderer(savedInstanceState.getString("host"), savedInstanceState.getInt("port"));
-			GameRenderer gr = new GameRenderer("192.168.1.77", 50000);
+			GameRenderer gr = new GameRenderer(getIntent().getStringExtra(
+					"host"), getIntent().getIntExtra("port", 0));
 			initialize(gr, false);
 		} catch (IOException ex) {
-	    	Toast toast = Toast.makeText(getApplicationContext(), "Connexion error", Toast.LENGTH_SHORT);
-	    	toast.show();
+			Toast toast = Toast.makeText(getApplicationContext(),
+					"Connexion error : " + getIntent().getStringExtra("host")
+							+ ":" + getIntent().getIntExtra("port", 0),
+					Toast.LENGTH_SHORT);
+			toast.show();
 			Intent intent = new Intent(this, ClientActivity.class);
-	    	startActivity(intent);
-	    	finish();
+			startActivity(intent);
+			finish();
 		}
 	}
 }

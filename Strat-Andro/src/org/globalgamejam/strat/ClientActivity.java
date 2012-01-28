@@ -41,7 +41,7 @@ public class ClientActivity extends Activity {
     
     private void launchUI() {
     	Intent intent = new Intent(this, GameUIActivity.class);
-    	intent.putExtra("host", etPortDest.getText().toString());
+    	intent.putExtra("host", etIpDest.getText().toString());
     	intent.putExtra("port", Integer.parseInt(etPortDest.getText().toString()));
     	startActivity(intent);
     }
