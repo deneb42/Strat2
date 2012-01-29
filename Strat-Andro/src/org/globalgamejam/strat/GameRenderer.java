@@ -112,7 +112,7 @@ public class GameRenderer implements ApplicationListener {
 					else if(select == monId)
 					{
 						Log.i("action", "transfert de pierre vers le joueur de la part de " + select);
-						com.stealStone(select);
+						com.stealStone(selected);
 					}
 					else
 					{

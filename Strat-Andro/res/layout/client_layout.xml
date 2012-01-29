@@ -8,7 +8,7 @@
         android:id="@+id/titre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Connection"
+        android:text="Connexion"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="text" 
-		android:text="192.168.1.77" >
+		android:text="192.168.0.103" >
         <requestFocus />
     </EditText>
 
@@ -45,6 +45,6 @@
         android:id="@+id/bConnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Connection" />
+        android:text="Connexion" />
 
 </LinearLayout>
