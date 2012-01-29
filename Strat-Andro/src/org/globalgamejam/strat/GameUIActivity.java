@@ -1,3 +1,16 @@
+/*
+ * Strat-game PC-Server :
+ * 
+ * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
+ * Released on 29/01/12 at 15h00 for the 4th GGJ
+ * 
+ * This program and all its resources included is
+ * published under the Creative common license By-NC 3.0.
+ * 
+ * For more informations :
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ */
+
 package org.globalgamejam.strat;
 
 import java.io.IOException;
