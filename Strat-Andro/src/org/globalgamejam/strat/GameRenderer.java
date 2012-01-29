@@ -23,7 +23,7 @@ public class GameRenderer implements ApplicationListener {
 	
 	Texture texAvatar, texBonus, texLifeBar, texBlockBar;
 	private Sprite[] bonus, avatars, lifeBar, blockBar;
-	private Sprite bg, bgWait, cursor;
+	private Sprite bg, bgWait, bgWin, bgLost, bgDeco, cursor;
 	private SpriteBatch batch, batch2;
 	public static int w, h;
 	
@@ -47,8 +47,12 @@ public class GameRenderer implements ApplicationListener {
 		batch2 = new SpriteBatch();
 
 		bg = new Sprite(new Texture(PATH_IMG + "bgPhone.png"));
-		cursor = new Sprite(new Texture(PATH_IMG + "cursor.png"));
+		bgWin = new Sprite(new Texture(PATH_IMG + "bgWin.png"));
+		bgLost = new Sprite(new Texture(PATH_IMG + "bgLost.png"));
+		bgDeco = new Sprite(new Texture(PATH_IMG + "bgDeco.png"));
 		bgWait = new Sprite(new Texture(PATH_IMG + "bgWait.png"));
+		
+		cursor = new Sprite(new Texture(PATH_IMG + "cursor.png"));
 
 		allocTextures();
 		loadTextures();
@@ -71,9 +75,23 @@ public class GameRenderer implements ApplicationListener {
 			return;
 		}
 
-		if(com.getStatus()!=0) // beark caca !
-			return;
-		
+		switch(com.getStatus()) {
+			case Communication.STATUS_WIN:
+				batch.begin();
+				bgWin.draw(batch);
+				batch.end();
+				return;
+			case Communication.STATUS_LOST:
+				batch.begin();
+				bgLost.draw(batch);
+				batch.end();
+				return;
+			case Communication.STATUS_DECO:
+				batch.begin();
+				bgDeco.draw(batch);
+				batch.end();
+				return;
+		}	
 		
 		if(Gdx.input.justTouched())//isTouched())
 		{

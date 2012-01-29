@@ -34,6 +34,12 @@ public class Communication {
 	private static final int OBTAIN_BONUS = 3;
 	private static final int DISCONNECT = 4;
 	private static final int END_GAME = 5;
+	
+	// Global status
+	public static final int  STATUS_IN_PROGRESS = 0;
+	public static final int  STATUS_WIN = 1;
+	public static final int  STATUS_LOST = 2;
+	public static final int  STATUS_DECO= 3;
 
 	public Communication(String host, int port) throws IOException {
 		try {
@@ -115,9 +121,6 @@ public class Communication {
 		return bonus;
 	}
 
-	// Return 0 : Game in progress
-	// Return 1 : Win
-	// Return 2 : Lost
 	public int getStatus() {
 		return status;
 	}
