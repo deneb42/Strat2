@@ -128,7 +128,7 @@ public class Communication {
 	}
 
 	public boolean isAlive(int id) {
-		if (id > 0 && id < alives.length)
+		if (id >= 0 && id < alives.length)
 			return alives[id];
 		return false;
 	}
