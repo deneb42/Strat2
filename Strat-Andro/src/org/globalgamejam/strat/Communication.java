@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import android.util.Log;
 
-public class Communication {// extends Service {
+public class Communication {
 	// Communication objects
 	private Socket socket;
 	private OutputStream ostream;
@@ -59,7 +59,7 @@ public class Communication {// extends Service {
 	public void stealStone(int who) {
 		byte[] msg = new byte[2];
 		msg[0] = STEAL_STONE;
-		msg[1] = (byte) (who-1);
+		msg[1] = (byte) who;
 		try {
 			ostream.write(msg);
 		} catch (IOException e) {
@@ -72,7 +72,7 @@ public class Communication {// extends Service {
 	public void giveStone(int who) {
 		byte[] msg = new byte[2];
 		msg[0] = GIVE_STONE;
-		msg[1] = (byte) (who-1);
+		msg[1] = (byte) who;
 		try {
 			ostream.write(msg);
 		} catch (IOException e) {
@@ -96,7 +96,7 @@ public class Communication {// extends Service {
 	}
 
 	public int getId() {
-		return iD+1;
+		return iD;
 	}
 
 	public int getTotalId() {

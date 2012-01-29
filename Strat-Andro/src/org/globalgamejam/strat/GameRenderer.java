@@ -21,10 +21,10 @@ public class GameRenderer implements ApplicationListener {
 						posiY ;//= {-184, -248, -372, -460, -372, -248 };
 	public static String PATH_IMG = "img/";
 	
-	private SpriteBatch batch, batch2;
-	private Sprite[] bonus, avatars, lifeBar, blockBar;
-	private Sprite bg, cursor;
 	Texture texAvatar, texBonus, texLifeBar, texBlockBar;
+	private Sprite[] bonus, avatars, lifeBar, blockBar;
+	private Sprite bg, bgWait, cursor;
+	private SpriteBatch batch, batch2;
 	public static int w, h;
 	
 	private Communication com;
@@ -34,8 +34,8 @@ public class GameRenderer implements ApplicationListener {
 		
 
 	public GameRenderer(String host, int port) throws IOException {
-		//com = new Communication(host, port);
-		//com.start();
+		com = new Communication(host, port);
+		com.start();
 	}
 
 	public void create() {
@@ -48,6 +48,7 @@ public class GameRenderer implements ApplicationListener {
 
 		bg = new Sprite(new Texture(PATH_IMG + "bgPhone.png"));
 		cursor = new Sprite(new Texture(PATH_IMG + "cursor1.png"));
+		bgWait = new Sprite(new Texture(PATH_IMG + "bgWait.png"));
 
 		allocTextures();
 		loadTextures();
@@ -68,7 +69,12 @@ public class GameRenderer implements ApplicationListener {
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		//if (!com.isConnected()) return;
+		if (!com.isConnected()) {
+			batch.begin();
+			bgWait.draw(batch);
+			batch.end();
+			return;
+		}
 
 		//if(com.getStatus()!=0) // beark caca !
 			//return;
@@ -105,12 +111,12 @@ public class GameRenderer implements ApplicationListener {
 					
 					if(selected == monId)
 					{
-						Log.i("action", "transfert de piere du joueur vers " + select);
+						Log.i("action", "transfert de pierre du joueur vers " + select);
 						//com.giveStone(select);
 					}
 					else if(select == monId)
 					{
-						Log.i("action", "transfert de piere vers le joueur de la part de " + select);
+						Log.i("action", "transfert de pierre vers le joueur de la part de " + select);
 						//com.stealStone(select);
 					}
 					else
