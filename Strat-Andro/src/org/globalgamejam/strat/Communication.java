@@ -121,6 +121,7 @@ public class Communication {
 		return bonus;
 	}
 
+	// return one of the STATUS_* value
 	public int getStatus() {
 		return status;
 	}
@@ -213,17 +214,9 @@ public class Communication {
 			} catch (IOException io) {
 				Log.e("Communication", "StreamAnalyzer : " + io.getMessage());
 				running = false;
+				status = 3;
+				iD = -1;
 			}
 		}
 	}
-	/*
-	 * @Override public int onStartCommand(Intent intent, int flags, int
-	 * startId) { // TODO Auto-generated method stub return
-	 * super.onStartCommand(intent, flags, startId);
-	 * 
-	 * }
-	 * 
-	 * @Override public IBinder onBind(Intent arg0) { // TODO Auto-generated
-	 * method stub return null; }
-	 */
 }
