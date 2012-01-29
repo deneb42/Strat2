@@ -93,6 +93,9 @@ public class GameRenderer implements ApplicationListener {
 				}
 			}
 			
+			if(select == -1)
+				selected = -1;
+			
 			if(select != -1 && select != selected)
 			{
 				if(selected == -1)
@@ -155,9 +158,12 @@ public class GameRenderer implements ApplicationListener {
 		avatars[monId].setPosition(posiX[0], posiY[0]);
 		avatars[monId].draw(batch2);
 		for (i = 1; i < NB_JOUEURS; i++) {
-			avatars[posiToId(i, monId)].setPosition(posiX[i], posiY[i]);
-			avatars[posiToId(i, monId)].setScale(0.8f);
-			avatars[posiToId(i, monId)].draw(batch2);
+			Log.d("isAlive", "id : " + posiToId(i, monId) + " is alive : " + com.isAlive(posiToId(i, monId)));
+			if(com.isAlive(posiToId(i, monId))) {
+				avatars[posiToId(i, monId)].setPosition(posiX[i], posiY[i]);
+				avatars[posiToId(i, monId)].setScale(0.8f);
+				avatars[posiToId(i, monId)].draw(batch2);
+			}
 		}
 		
 		if(selected != -1)
