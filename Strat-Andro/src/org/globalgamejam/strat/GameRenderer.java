@@ -15,19 +15,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameRenderer implements ApplicationListener {
 
-	private SpriteBatch batch;
-	private Sprite[] bonus, avatars, lifeBar, blockBar;
-	private Sprite bg;
-	Texture texAvatar, texBonus, texLifeBar, texBlockBar;
-	private static final int NB_JOUEURS = 7, NB_BONUS = 5,
-			NB_SPRITE_LIFEBAR = 2, NB_SPRITE_BLOCKBAR = 7;
+	private static final int NB_JOUEURS = 6, NB_BONUS = 5, NB_SPRITE_LIFEBAR = 2, NB_SPRITE_BLOCKBAR = 7;
 	private static final int NB_BLOCK_MAX = 10;
-	private static int[] posiX = { -84, +128, +64, -80, -228, -292 }, posiY = {
-			-184, -248, -372, -460, -372, -248 };
-	public static int halfW, h;
-	private boolean firstLaunch = true;
+	private static int[] posiX, //= { -84, +128, +64, -80, -228, -292 }, 
+						posiY ;//= {-184, -248, -372, -460, -372, -248 };
 	public static String PATH_IMG = "img/";
-
+	
+	private SpriteBatch batch, batch2;
+	private Sprite[] bonus, avatars, lifeBar, blockBar;
+	private Sprite bg, cursor;
+	Texture texAvatar, texBonus, texLifeBar, texBlockBar;
+	public static int w, h;
+	
 	private Communication com;
 	
 	//Interface
@@ -35,61 +34,58 @@ public class GameRenderer implements ApplicationListener {
 		
 
 	public GameRenderer(String host, int port) throws IOException {
-		com = new Communication(host, port);
-		com.start();
+		//com = new Communication(host, port);
+		//com.start();
 	}
 
 	public void create() {
 		
-		halfW = Gdx.graphics.getWidth() / 2;
+		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight(); // helps the placement of the avatars
 
 		batch = new SpriteBatch();
+		batch2 = new SpriteBatch();
 
-		texAvatar = new Texture(PATH_IMG + "avatar.png");
-		texBonus = new Texture(PATH_IMG + "bonus.png");
-		texLifeBar = new Texture(PATH_IMG + "lifebar.png");
-		texBlockBar = new Texture(PATH_IMG + "blockbar.png");
 		bg = new Sprite(new Texture(PATH_IMG + "bgPhone.png"));
+		cursor = new Sprite(new Texture(PATH_IMG + "cursor1.png"));
 
+		allocTextures();
 		loadTextures();
 		
-		//if(firstLaunch)
-		{
-			for (int i = 0; i < 6; i++) {
-				posiX[i] += halfW;
-				posiY[i] += h;
-			}
-			//firstLaunch=false;
+		for(int i=0;i<6;i++) {
+			//posiX[i] += w/2;
+			//posiY[i] += h;
 		}
+		
+		setPositions();
 	}
 
 	public void render() {
-		int nbPa = com.getActions();
-		int nbBlock = com.getStones();
-		int id = com.getId();
-		int i;
+		int nbPa = 1;//= com.getActions();
+		int nbBlock = 5;//= com.getStones();
+		int monId = 4;//com.getId();
+		int i, select = -1;
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		if (!com.isConnected()) return;
+		//if (!com.isConnected()) return;
 
-		if(com.getStatus()!=0) // beark caca !
-			return;
+		//if(com.getStatus()!=0) // beark caca !
+			//return;
 		
 		
 		if(Gdx.input.isTouched())
 		{
 			int x = Gdx.input.getX(), y = Gdx.input.getY();
-			int select = -1;
+			//select = -1;
 			//Log.i("colision", "collision au " + "x " + x + " y : " + y);
 			
-			for(i=1; i< NB_JOUEURS;i++)
+			for(i=0; i< NB_JOUEURS;i++)
 			{
-				if(collision(x, y, avatars[i].getX(), avatars[i].getY(),avatars[i].getWidth(), avatars[i].getHeight()))
+				if(collision(x, h-y, avatars[i].getX(), avatars[i].getY(),avatars[i].getWidth(), avatars[i].getHeight()))
 				{
 					select = i;
-					Log.i("colision", "collision avec  " + select);
+					//Log.i("colision", "collision avec  " + select);
 					//Log.i("coordonnees", "x : " + avatars[select].getX() + "y : " + avatars[select].getY() +
 					//					 "w : "+ avatars[select].getWidth() + "h : " + avatars[select].getHeight());
 					
@@ -107,25 +103,21 @@ public class GameRenderer implements ApplicationListener {
 				{
 					Log.i("setSelect", " new selection : " + selected);
 					
-					//if(select != selected)
+					if(selected == monId)
 					{
-						if(selected == id)
-						{
-							Log.i("action", "transfert de piere du joueur vers " + select);
-							com.giveStone(select);
-						}
-						else if(select == id)
-						{
-							Log.i("action", "transfert de piere vers le joueur de la part de " + select);
-							com.stealStone(select);
-						}
-						else
-						{
-							Log.i("action", "action spéciale de " + selected + "vers " + select);
-						}
-						selected=-1;
+						Log.i("action", "transfert de piere du joueur vers " + select);
+						//com.giveStone(select);
 					}
-					
+					else if(select == monId)
+					{
+						Log.i("action", "transfert de piere vers le joueur de la part de " + select);
+						//com.stealStone(select);
+					}
+					else
+					{
+						Log.i("action", "action spéciale de " + selected + "vers " + select);
+					}
+					selected=-1;
 				}
 			}
 			
@@ -147,37 +139,82 @@ public class GameRenderer implements ApplicationListener {
 
 		/* BLOCKS */
 		for (i = 0; i < nbBlock; i++) {
-			blockBar[id]
-					.setPosition(10, 5 + i * (blockBar[id].getHeight() + 5));
-			blockBar[id].draw(batch);
+			blockBar[monId]
+					.setPosition(10, 5 + i * (blockBar[monId].getHeight() + 5));
+			blockBar[monId].draw(batch);
 		}
 		for (; i < NB_BLOCK_MAX; i++) {
-			blockBar[0].setPosition(10, 5 + i * (blockBar[0].getHeight() + 5));
-			blockBar[0].draw(batch);
+			blockBar[NB_SPRITE_BLOCKBAR-1].setPosition(10, 5 + i * (blockBar[0].getHeight() + 5));
+			blockBar[NB_SPRITE_BLOCKBAR-1].draw(batch);
 		}
 		/* FIN BLOCK */
-
-		avatars[id].setPosition(posiX[0], posiY[0]);
-		avatars[id].draw(batch);
-		for (i = 0; i < NB_JOUEURS-2; i++) {
-			avatars[(id+i) % (NB_JOUEURS-1) + 1].setPosition(posiX[i+1], posiY[i+1]);
-			avatars[(id+i) % (NB_JOUEURS-1) + 1].setScale(0.8f);
-			avatars[(id+i) % (NB_JOUEURS-1) + 1].draw(batch);
-		}
-
 		batch.end();
 
-	}
+		batch2.begin();
+		avatars[monId].setPosition(posiX[0], posiY[0]);
+		avatars[monId].draw(batch2);
+		for (i = 1; i < NB_JOUEURS; i++) {
+			avatars[posiToId(i, monId)].setPosition(posiX[i], posiY[i]);
+			avatars[posiToId(i, monId)].setScale(0.8f);
+			avatars[posiToId(i, monId)].draw(batch2);
+		}
+		
+		if(selected != -1)
+		{
+			cursor.setPosition(posiX[idToPosi(selected, monId)], posiY[idToPosi(selected, monId)]);
+			cursor.draw(batch2);
+			//Log.d("lulz", "selected : " + selected + " select : " + select);
+		}
+		batch2.end();
+		
 
+	}
+	
+	private void setPositions() {
+		int padding = 20;
+		
+		posiX = new int[6];
+		posiY = new int[6];
+		
+		posiX[0] = (int) ((w - bonus[0].getWidth() - blockBar[0].getWidth()) / 2) ;//- avatars[0].getWidth()/2);
+		posiX[1] = (int) (w - bonus[1].getWidth() - avatars[1].getWidth() - padding);
+		posiX[2] = (int) (posiX[1] - avatars[1].getWidth()/2 - padding);
+		posiX[3] = posiX[0];
+		posiX[4] = (int) (posiX[5] + avatars[0].getWidth() + 2*padding);
+		posiX[5] = (int) (blockBar[1].getWidth() + padding);
+
+		posiY[0] = (int) (h - lifeBar[0].getHeight() - avatars[0].getHeight() - padding);
+		posiY[1] = posiY[0] - padding;
+		posiY[2] = (int) (h/2 - avatars[0].getHeight()/2 - 2*padding);
+		posiY[3] = padding;
+		posiY[4] = posiY[2];
+		posiY[5] = posiY[1];
+	}
+	
+		
+	private void allocTextures() {
+		texAvatar = new Texture(PATH_IMG + "avatar.png");
+		texBonus = new Texture(PATH_IMG + "bonus.png");
+		texLifeBar = new Texture(PATH_IMG + "lifebar.png");
+		texBlockBar = new Texture(PATH_IMG + "blockbar.png");
+	}
+	
+	private void desallocTextures() {
+		texAvatar.dispose();
+		texBonus.dispose();
+		texLifeBar.dispose();
+		texBlockBar.dispose();
+	}
+	
 	private void loadTextures() {
 		bonus = new Sprite[NB_BONUS];
 		avatars = new Sprite[NB_JOUEURS];
 		lifeBar = new Sprite[NB_SPRITE_LIFEBAR];
 		blockBar = new Sprite[NB_SPRITE_BLOCKBAR];
 
-		for (int i = 1; i < NB_JOUEURS; i++)
-			avatars[i] = new Sprite(new TextureRegion(texAvatar, (i % 4) * 128,
-					(i / 4) * 128, 128, 128));
+		for (int i = 0; i < NB_JOUEURS; i++)
+			avatars[i] = new Sprite(new TextureRegion(texAvatar, (i % 3) * 128,
+					(i / 3) * 128, 128, 128));
 
 		for (int i = 0; i < NB_BONUS; i++)
 			bonus[i] = new Sprite(new TextureRegion(texBonus, (i % 2) * 64,
@@ -204,9 +241,31 @@ public class GameRenderer implements ApplicationListener {
 		
 		return true;
 	}
-
-	public void dispose() {}
-	public void pause()  {}
-	public void resize(int arg0, int arg1)  {}
-	public void resume()  {}
+	
+	private int idToPosi(int id, int monId) {
+		return (id-monId+NB_JOUEURS)%NB_JOUEURS;
+	}
+	
+	private int posiToId(int posi, int monId) {
+		return (posi + monId)%NB_JOUEURS;
+	}
+	
+	public void dispose() {
+		desallocTextures();
+	}
+	
+	public void pause()  {
+		desallocTextures();
+	}
+	public void resize(int arg0, int arg1)  {
+		allocTextures();
+		loadTextures();
+		render();
+		
+	}
+	public void resume()  {
+		allocTextures();
+		loadTextures();
+		render();
+	}
 }
