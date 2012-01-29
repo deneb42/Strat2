@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import android.util.Log;
 
-public class Communication {// extends Service {
+public class Communication {
 	// Communication objects
 	private Socket socket;
 	private OutputStream ostream;

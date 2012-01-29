@@ -17,7 +17,7 @@ public class GameRenderer implements ApplicationListener {
 
 	private SpriteBatch batch;
 	private Sprite[] bonus, avatars, lifeBar, blockBar;
-	private Sprite bg;
+	private Sprite bg, bgWait;
 	Texture texAvatar, texBonus, texLifeBar, texBlockBar;
 	private static final int NB_JOUEURS = 7, NB_BONUS = 5,
 			NB_SPRITE_LIFEBAR = 2, NB_SPRITE_BLOCKBAR = 7;
@@ -51,6 +51,7 @@ public class GameRenderer implements ApplicationListener {
 		texLifeBar = new Texture(PATH_IMG + "lifebar.png");
 		texBlockBar = new Texture(PATH_IMG + "blockbar.png");
 		bg = new Sprite(new Texture(PATH_IMG + "bgPhone.png"));
+		bgWait = new Sprite(new Texture(PATH_IMG + "bgWait.png"));
 
 		loadTextures();
 		
@@ -72,7 +73,12 @@ public class GameRenderer implements ApplicationListener {
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		if (!com.isConnected()) return;
+		if (!com.isConnected()) {
+			batch.begin();
+			bgWait.draw(batch);
+			batch.end();
+			return;
+		}
 
 		if(com.getStatus()!=0) // beark caca !
 			return;
