@@ -17,20 +17,23 @@ public class GameRenderer implements ApplicationListener {
 
 	private static final int NB_JOUEURS = 6, NB_BONUS = 5, NB_SPRITE_LIFEBAR = 2, NB_SPRITE_BLOCKBAR = 7;
 	private static final int NB_BLOCK_MAX = 10;
-	private static int[] posiX, //= { -84, +128, +64, -80, -228, -292 }, 
-						posiY ;//= {-184, -248, -372, -460, -372, -248 };
 	public static String PATH_IMG = "img/";
 	
 	Texture texAvatar, texBonus, texLifeBar, texBlockBar;
 	private Sprite[] bonus, avatars, lifeBar, blockBar;
 	private Sprite bg, bgWait, bgWin, bgLost, bgDeco, cursor;
 	private SpriteBatch batch, batch2;
-	public static int w, h;
+	
+	
+	private int bonusposition = 0;
 	
 	private Communication com;
 	
 	//Interface
-		private int selected = -1;
+		private int selected = -1, select = -1;
+		private int[] posiX, posiY ;
+		public int w, h, monId;
+		
 		
 
 	public GameRenderer(String host, int port) throws IOException {
@@ -63,8 +66,10 @@ public class GameRenderer implements ApplicationListener {
 	public void render() {
 		int nbPa = com.getActions();
 		int nbBlock = com.getStones();
-		int monId = com.getId();
-		int i, select = -1;
+		int bonusId = com.getBonus();
+		int i;
+		
+		monId = com.getId();
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
@@ -92,60 +97,19 @@ public class GameRenderer implements ApplicationListener {
 				batch.end();
 				return;
 		}	
-		
-		if(Gdx.input.justTouched())//isTouched())
-		{
-			int x = Gdx.input.getX(), y = Gdx.input.getY();
-			//select = -1;
-			Log.i("colision", "collision au " + "x " + x + " y : " + y);
+
+		if(Gdx.input.justTouched())
+			touchProcessing();
 			
-			for(i=0; i< NB_JOUEURS;i++)
-			{
-				if(collision(x, h-y, avatars[i].getX(), avatars[i].getY(),avatars[i].getWidth(), avatars[i].getHeight()))
-				{
-					select = i;
-					//Log.i("colision", "collision avec  " + select);
-					//Log.i("coordonnees", "x : " + avatars[select].getX() + "y : " + avatars[select].getY() +
-					//					 "w : "+ avatars[select].getWidth() + "h : " + avatars[select].getHeight());
-					
-				}
-			}
-			
-			if(select != -1 && select != selected)
-			{
-				if(selected == -1)
-				{
-					selected=select;
-					Log.i("setSelected", " new selection : " + selected);
-				}
-				else
-				{
-					Log.i("setSelect", " new selection : " + selected);
-					
-					if(selected == monId)
-					{
-						Log.i("action", "transfert de pierre du joueur vers " + select);
-						com.giveStone(select);
-					}
-					else if(select == monId)
-					{
-						Log.i("action", "transfert de pierre vers le joueur de la part de " + select);
-						com.stealStone(selected);
-					}
-					else
-					{
-						Log.i("action", "action spéciale de " + selected + "vers " + select);
-					}
-					selected=-1;
-				}
-			}
-			else
-				selected=-1;
-			
-		}
 		
 		batch.begin();
 		bg.draw(batch);
+		
+		if (bonusId >= 0 && bonusId < bonus.length) {
+			if (bonusposition < 0) bonusposition = (int) ((Math.random() * (Gdx.graphics.getHeight()- 64 - 20))) + 10;
+			bonus[bonusId].setPosition(w-64-10, bonusposition);
+			bonus[bonusId].draw(batch);
+		} else bonusposition = -100;
 		
 		/* LIFEBAR */
 		for (i = 0; i < nbPa - 1; i++) {
@@ -251,6 +215,48 @@ public class GameRenderer implements ApplicationListener {
 		for (int i = 0; i < NB_SPRITE_BLOCKBAR; i++)
 			blockBar[i] = new Sprite(new TextureRegion(texBlockBar,
 					(i % 4) * 64, (i / 4) * 32, 64, 32));
+	}
+	
+	private void touchProcessing() {
+		int x = Gdx.input.getX(), y = Gdx.input.getY();
+		
+		select = -1;
+		
+		//Log.i("colision", "collision au " + "x " + x + " y : " + y);
+		
+		for(int i=0; i< NB_JOUEURS;i++)
+		{
+			if(collision(x, h-y, avatars[i].getX(), avatars[i].getY(),avatars[i].getWidth(), avatars[i].getHeight()))
+				select = i;			
+		}
+		
+		if(select == -1 || select == selected) //if nothing or the last selected avatar is selected, nothing to do
+			return;
+		
+		
+		Log.i("setSelected", " new selection : " + selected);
+		
+		if(selected == -1) { // if nothing was previously selected
+			selected=select;
+			return;
+		}
+		
+		if(selected == monId) // if the first selected avatar was the player's one
+		{
+			Log.i("action", "transfert de pierre du joueur vers " + select);
+			com.giveStone(select);
+		}
+		else if(select == monId) // if the last selected avatar is the player's one
+		{
+			Log.i("action", "transfert de pierre vers le joueur de la part de " + select);
+			com.stealStone(selected);
+		}
+		else
+		{
+			Log.i("action", "action spéciale de " + selected + "vers " + select);
+		}
+		
+		selected = -1;		
 	}
 
 	private boolean collision(int pX, int pY, float cX, float cY, float cW, float cH) {
