@@ -52,7 +52,7 @@ public class Communication {
 		totalId = 0;
 		stones = 0;
 		actions = 0;
-		bonus = 0;
+		bonus = -1;
 		status = 0;
 	}
 

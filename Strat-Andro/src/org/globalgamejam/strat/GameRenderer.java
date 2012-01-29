@@ -27,6 +27,8 @@ public class GameRenderer implements ApplicationListener {
 	private SpriteBatch batch, batch2;
 	public static int w, h;
 	
+	private int bonusposition = 0;
+	
 	private Communication com;
 	
 	//Interface
@@ -60,6 +62,7 @@ public class GameRenderer implements ApplicationListener {
 		int nbPa = com.getActions();
 		int nbBlock = com.getStones();
 		int monId = com.getId();
+		int bonusId = com.getBonus();
 		int i, select = -1;
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -73,7 +76,6 @@ public class GameRenderer implements ApplicationListener {
 
 		if(com.getStatus()!=0) // beark caca !
 			return;
-		
 		
 		if(Gdx.input.justTouched())//isTouched())
 		{
@@ -128,6 +130,12 @@ public class GameRenderer implements ApplicationListener {
 		
 		batch.begin();
 		bg.draw(batch);
+		
+		if (bonusId >= 0 && bonusId < bonus.length) {
+			if (bonusposition < 0) bonusposition = (int) ((Math.random() * (Gdx.graphics.getHeight()- 64 - 20))) + 10;
+			bonus[bonusId].setPosition(w-64-10, bonusposition);
+			bonus[bonusId].draw(batch);
+		} else bonusposition = -100;
 		
 		/* LIFEBAR */
 		for (i = 0; i < nbPa - 1; i++) {
