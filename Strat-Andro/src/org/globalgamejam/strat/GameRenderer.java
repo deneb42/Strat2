@@ -3,6 +3,7 @@ package org.globalgamejam.strat;
 import java.io.IOException;
 
 import android.util.Log;
+import android.webkit.WebChromeClient.CustomViewCallback;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -21,18 +22,19 @@ public class GameRenderer implements ApplicationListener {
 	
 	Texture texAvatar, texBonus, texLifeBar, texBlockBar;
 	private Sprite[] bonus, avatars, lifeBar, blockBar;
-	private Sprite bg, bgWait, bgWin, bgLost, bgDeco, cursor;
+	private Sprite bg, bgWait, bgWin, bgLost, bgDeco, cursor, cursorBonus;
 	private SpriteBatch batch, batch2;
 	
 	
-	private int bonusposition = 0;
+	
 	
 	private Communication com;
 	
 	//Interface
 		private int selected = -1, select = -1;
 		private int[] posiX, posiY ;
-		public int w, h, monId;
+		public int w, h, monId, bonusId;
+		private int bonusposition = 0, bonusSelected=-1;
 		
 		
 
@@ -56,6 +58,7 @@ public class GameRenderer implements ApplicationListener {
 		bgWait = new Sprite(new Texture(PATH_IMG + "bgWait.png"));
 		
 		cursor = new Sprite(new Texture(PATH_IMG + "cursor.png"));
+		cursorBonus = new Sprite(new Texture(PATH_IMG + "cursorBonus.png"));
 
 		allocTextures();
 		loadTextures();
@@ -66,10 +69,10 @@ public class GameRenderer implements ApplicationListener {
 	public void render() {
 		int nbPa = com.getActions();
 		int nbBlock = com.getStones();
-		int bonusId = com.getBonus();
 		int i;
 		
 		monId = com.getId();
+		bonusId = com.getBonus();
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
@@ -108,6 +111,11 @@ public class GameRenderer implements ApplicationListener {
 		if (bonusId >= 0 && bonusId < bonus.length) {
 			if (bonusposition < 0) bonusposition = (int) ((Math.random() * (Gdx.graphics.getHeight()- 64 - 20))) + 10;
 			bonus[bonusId].setPosition(w-64-10, bonusposition);
+			if(bonusSelected != -1)
+			{
+				cursorBonus.setPosition(w-64-10, bonusposition);
+				cursorBonus.draw(batch);
+			}
 			bonus[bonusId].draw(batch);
 		} else bonusposition = -100;
 		
@@ -151,7 +159,7 @@ public class GameRenderer implements ApplicationListener {
 		{
 			cursor.setPosition(posiX[idToPosi(selected, monId)], posiY[idToPosi(selected, monId)]);
 			cursor.draw(batch2);
-			//Log.d("lulz", "selected : " + selected + " select : " + select);
+			Log.d("lulz", "selected : " + selected + " select : " + select);
 		}
 		batch2.end();
 		
@@ -224,20 +232,34 @@ public class GameRenderer implements ApplicationListener {
 		
 		//Log.i("colision", "collision au " + "x " + x + " y : " + y);
 		
+		if(bonusId>=0 && bonusId<NB_BONUS)
+			if(collision(x, h-y, bonus[bonusId].getX(), bonus[bonusId].getY(), bonus[bonusId].getWidth(), bonus[bonusId].getHeight())) {
+				bonusSelected = bonusId;
+				selected = -1;
+				return;
+			}
+		
 		for(int i=0; i< NB_JOUEURS;i++)
 		{
 			if(collision(x, h-y, avatars[i].getX(), avatars[i].getY(),avatars[i].getWidth(), avatars[i].getHeight()))
 				select = i;			
 		}
 		
-		if(select == -1 || select == selected) //if nothing or the last selected avatar is selected, nothing to do
+		if(select == -1 || select == selected) {//if nothing or the last selected avatar is selected, nothing to do
+			selected = -1;
+			bonusSelected = -1;
 			return;
-		
+		}
 		
 		Log.i("setSelected", " new selection : " + selected);
 		
 		if(selected == -1) { // if nothing was previously selected
-			selected=select;
+			if(bonusSelected!=-1) {
+				com.useBonus(bonusSelected, monId, select);
+			}
+			else
+				selected=select;
+			
 			return;
 		}
 		
