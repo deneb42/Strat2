@@ -53,18 +53,13 @@ public class GameRenderer implements ApplicationListener {
 		allocTextures();
 		loadTextures();
 		
-		for(int i=0;i<6;i++) {
-			//posiX[i] += w/2;
-			//posiY[i] += h;
-		}
-		
 		setPositions();
 	}
 
 	public void render() {
-		int nbPa = 1;//= com.getActions();
-		int nbBlock = 5;//= com.getStones();
-		int monId = 4;//com.getId();
+		int nbPa = com.getActions();
+		int nbBlock = com.getStones();
+		int monId = com.getId();
 		int i, select = -1;
 		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -76,8 +71,8 @@ public class GameRenderer implements ApplicationListener {
 			return;
 		}
 
-		//if(com.getStatus()!=0) // beark caca !
-			//return;
+		if(com.getStatus()!=0) // beark caca !
+			return;
 		
 		
 		if(Gdx.input.isTouched())
@@ -112,12 +107,12 @@ public class GameRenderer implements ApplicationListener {
 					if(selected == monId)
 					{
 						Log.i("action", "transfert de pierre du joueur vers " + select);
-						//com.giveStone(select);
+						com.giveStone(select);
 					}
 					else if(select == monId)
 					{
 						Log.i("action", "transfert de pierre vers le joueur de la part de " + select);
-						//com.stealStone(select);
+						com.stealStone(select);
 					}
 					else
 					{
