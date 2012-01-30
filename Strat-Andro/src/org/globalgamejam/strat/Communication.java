@@ -3,6 +3,7 @@
  * 
  * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
  * Released on 29/01/12 at 15h00 for the 4th GGJ
+ * Corrections added for public presentation after the event
  * 
  * This program and all its resources included is
  * published under the Creative common license By-NC 3.0.
