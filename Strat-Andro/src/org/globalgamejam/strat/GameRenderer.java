@@ -17,7 +17,6 @@ package org.globalgamejam.strat;
 import java.io.IOException;
 
 import android.util.Log;
-import android.webkit.WebChromeClient.CustomViewCallback;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
