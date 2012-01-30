@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -26,19 +27,27 @@ public class GameUIActivity extends AndroidApplication {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
+		// Prevent screen to sleep
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+		// Try to connect
 		try {
+			// GameRenderer creation and connection
 			GameRenderer gr = new GameRenderer(getIntent().getStringExtra(
 					"host"), getIntent().getIntExtra("port", 0));
+			// OK, launch display
 			initialize(gr, false);
 		} catch (IOException ex) {
+			// Inform user of the error
 			Toast toast = Toast.makeText(getApplicationContext(),
 					"Connexion error : " + getIntent().getStringExtra("host")
 							+ ":" + getIntent().getIntExtra("port", 0),
 					Toast.LENGTH_SHORT);
 			toast.show();
+
+			// Go back to connect screen
 			Intent intent = new Intent(this, ClientActivity.class);
 			startActivity(intent);
 			finish();
