@@ -1,5 +1,5 @@
 /*
- * Strat-game PC-Server :
+ * Strat-game Android-Client :
  * 
  * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
  * Released on 29/01/12 at 15h00 for the 4th GGJ
