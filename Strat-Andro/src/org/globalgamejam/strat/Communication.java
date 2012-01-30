@@ -83,7 +83,6 @@ public class Communication {
 		try {
 			ostream.write(msg);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			Log.e("Communication",
 					"stealStone : IOException (" + e.getMessage() + ")");
 		}
