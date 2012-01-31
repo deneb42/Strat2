@@ -32,4 +32,10 @@ public class GameStrat extends Game {
 		batch = new SpriteBatch();
 		setScreen(new ScreenWait(this));
 	}
+	
+	@Override
+	public void dispose() {
+		com.stop();
+		super.dispose();
+	}
 }
