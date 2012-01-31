@@ -42,8 +42,8 @@ public class CircleAvatar {
 		private int xrel, yrel, id;
 
 		public Avatar(Texture texture, int id, int i, int total) {
-			super(new TextureRegion(texture, ((id + i) % 3) * 128,
-					((id + i) / 3) * 128, 128, 128));
+			super(new TextureRegion(texture, (((id + i) % total) % 3) * 128,
+					(((id + i) % total) / 3) * 128, 128, 128));
 			this.id = id;
 			xrel = (int) (x + 1.3f * RADIUS * Math.sin(2 * i * Math.PI / total));
 			yrel = (int) (y + RADIUS * Math.cos(2 * i * Math.PI / total));
