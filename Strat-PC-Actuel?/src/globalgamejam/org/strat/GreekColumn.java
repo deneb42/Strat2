@@ -1,0 +1,77 @@
+/*
+ * Strat-game PC-Server :
+ * 
+ * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
+ * Released on 29/01/12 at 15h00 for the 4th GGJ
+ * 
+ * This program and all its resources included is
+ * published under the Creative common license By-NC 3.0.
+ * 
+ * For more informations :
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ */
+
+package globalgamejam.org.strat;
+
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+public class GreekColumn {
+
+	// Resource images
+	public static final int NB_COLUMNS = 6;
+	public static final int NB_STONES = 10;
+	
+	private static final String[] avatarsPng = {"avatars/demeter.png", "avatars/zeus.png", "avatars/artemis.png", "avatars/helios.png", "avatars/ares.png", "avatars/athena.png"};
+	private static final String[] columnPng = {"nord/nord", "nordEst/nordEst", "sudEst/sudEst", "sud/sud", "sudOuest/sudOuest", "nordOuest/nordOuest" };
+	private static final int[] centersX = {578, 688, 688, 578, 292, 292};
+	private static final int[] centersY = {135, 286, 516, 558, 516, 286};
+	private static final int[] avatarsX = {0, 338, 338, 0, -338, -338};
+	private static final int[] avatarsY = {-388, -195, 195, 388, 195, -195};
+	
+	// Bitmaps objects
+	private static Boolean avatarLoaded = false;
+	private static BufferedImage avatars[];
+	private BufferedImage columns[];
+
+	// Internal attributes
+	private int iD;
+	
+	// GreekColumn method
+	public GreekColumn(int iD) {
+		this.iD = iD;
+		try {
+			// Load the columns
+			columns = new BufferedImage[NB_STONES];
+			for (int i = 0; i < NB_STONES; i++) {
+				columns[i] = ImageIO.read(new File(columnPng[iD] + (i + 1) + ".png"));
+			}
+			// Load the avatars
+			if (!avatarLoaded) {
+				avatarLoaded = true;
+				avatars = new BufferedImage[NB_COLUMNS];
+				for (int i = 0; i < NB_COLUMNS; i++) {
+					avatars[i] = ImageIO.read(new File(avatarsPng[i]));
+				}
+			}
+		} catch (IOException io) {
+			System.out.println("GreekColumn : unable to load some graphics "
+					+ io.getLocalizedMessage());
+		}
+	}
+	
+	public void paint(Graphics g, int stones) {
+		if (stones <= 0) return;
+		// Draw the column
+		g.drawImage(columns[stones-1], centersX[iD], centersY[iD], null);
+		// Place the avatar over column
+		int px = 576 + (avatarsX[iD] * (stones + 2)) / 12;
+		int py = 448 + (avatarsY[iD] * (stones + 2)) / 12;
+		g.drawImage(avatars[iD], px, py, null);
+	}
+
+}
