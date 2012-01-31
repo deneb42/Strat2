@@ -38,11 +38,14 @@ public class ClientActivity extends Activity {
 		setContentView(R.layout.client_layout);
 		Log.d("Strat", "Application opened");
 
-
 		// Retrieving of the UI handlers
 		etIpDest = (EditText) findViewById(R.id.etIpDest);
 		etPortDest = (EditText) findViewById(R.id.etPortDest);
 		bConnect = (Button) findViewById(R.id.bConnect);
+
+		// Default values
+		etIpDest.setText(getIntent().getStringExtra("host"));
+		etPortDest.setText("" + getIntent().getIntExtra("port", 0));
 
 		// Connect the interface listeners
 		bConnect.setOnClickListener(new OnClickListener() {
@@ -51,13 +54,14 @@ public class ClientActivity extends Activity {
 				launchUI();
 				finish();
 			}
-		});  
-    }
-    
-    private void launchUI() {
-    	Intent intent = new Intent(this, GameUIActivity.class);
-    	intent.putExtra("host", etIpDest.getText().toString());
-    	intent.putExtra("port", Integer.parseInt(etPortDest.getText().toString()));
-    	startActivity(intent);
-    }
+		});
+	}
+
+	private void launchUI() {
+		Intent intent = new Intent(this, GameUIActivity.class);
+		intent.putExtra("host", etIpDest.getText().toString());
+		intent.putExtra("port",
+				Integer.parseInt(etPortDest.getText().toString()));
+		startActivity(intent);
+	}
 }

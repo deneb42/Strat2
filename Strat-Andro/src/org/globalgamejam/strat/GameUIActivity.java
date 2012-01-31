@@ -49,6 +49,8 @@ public class GameUIActivity extends AndroidApplication {
 
 			// Go back to connect screen
 			Intent intent = new Intent(this, ClientActivity.class);
+			intent.putExtra("host", getIntent().getStringExtra("host"));
+			intent.putExtra("port", getIntent().getIntExtra("port", 0));
 			startActivity(intent);
 			finish();
 		}
