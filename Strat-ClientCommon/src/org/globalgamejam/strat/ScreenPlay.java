@@ -8,6 +8,7 @@ public class ScreenPlay extends ScreenBg {
 	private StonesGauge stonesGauge;
 	private ActionsGauge actionsGauge;
 	private BonusBar bonusBar;
+	private CircleAvatar circleAvatar;
 
 	public ScreenPlay(GameStrat g) {
 		super(g, "bgPhone.png");
@@ -21,6 +22,9 @@ public class ScreenPlay extends ScreenBg {
 
 		bonusBar = new BonusBar(game);
 		bonusBar.setPosition(Gdx.graphics.getWidth() - 74, 0);
+		
+		circleAvatar = new CircleAvatar(game);
+		circleAvatar.setPosition(350, 160);
 	}
 
 	@Override
@@ -36,6 +40,7 @@ public class ScreenPlay extends ScreenBg {
 		stonesGauge.draw(batch);
 		actionsGauge.draw(batch);
 		bonusBar.draw(batch);
+		circleAvatar.draw(batch);
 		batch.end();
 	}
 
