@@ -1,7 +1,7 @@
 /*
  * Strat-game PC-Server :
  * 
- * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
+ * Code : Frï¿½dï¿½ric Meslin, Florent Touchard, Benjamin Blois
  * Released on 29/01/12 at 15h00 for the 4th GGJ
  * 
  * This program and all its resources included is
@@ -33,8 +33,8 @@ public class ConnectionScreen extends JDialog implements ActionListener {
 	// Internal objects
 	private Game game;
 	private JPanel panel;
-	private JList<String> clientList;
-	private DefaultListModel<String> clientListModel;
+	private JList clientList;
+	private DefaultListModel clientListModel;
 	private JButton startButton;
 	private JButton exitButton;
 		
@@ -54,8 +54,8 @@ public class ConnectionScreen extends JDialog implements ActionListener {
 		setContentPane(panel);
 		
 		// Add the client list
-		clientListModel = new DefaultListModel<String>();
-		clientList = new JList<String>(clientListModel);
+		clientListModel = new DefaultListModel();
+		clientList = new JList(clientListModel);
 		clientList.setMinimumSize(new Dimension(300, 200));
 		panel.add(clientList);
 		
