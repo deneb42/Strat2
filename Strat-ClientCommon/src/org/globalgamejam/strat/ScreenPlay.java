@@ -22,7 +22,7 @@ public class ScreenPlay extends ScreenBg {
 
 		bonusBar = new BonusBar(game);
 		bonusBar.setPosition(Gdx.graphics.getWidth() - 74, 0);
-		
+
 		circleAvatar = new CircleAvatar(game);
 		circleAvatar.setPosition(350, 160);
 	}
@@ -31,6 +31,20 @@ public class ScreenPlay extends ScreenBg {
 	public void render(float delta) {
 		super.render(delta);
 
+		// Change screen to display status ?
+		int status = game.com.getStatus();
+		if (status == Communication.STATUS_WIN)
+			game.setScreen(new ScreenWin(game));
+		else if (status == Communication.STATUS_LOST)
+			game.setScreen(new ScreenLost(game));
+		else if (status == Communication.STATUS_DECO)
+			game.setScreen(new ScreenDeco(game));
+		if (status != Communication.STATUS_IN_PROGRESS) {
+			Gdx.app.log("Status", "" + status);
+			return;
+		}
+
+		// Process touch interaction
 		if (Gdx.input.justTouched())
 			touchInteraction();
 
