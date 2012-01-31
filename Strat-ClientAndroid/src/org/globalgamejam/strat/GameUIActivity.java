@@ -35,7 +35,7 @@ public class GameUIActivity extends AndroidApplication {
 		// Try to connect
 		try {
 			// GameRenderer creation and connection
-			GameRenderer gr = new GameRenderer(getIntent().getStringExtra(
+			GameStrat gr = new GameStrat(getIntent().getStringExtra(
 					"host"), getIntent().getIntExtra("port", 0));
 			// OK, launch display
 			initialize(gr, false);

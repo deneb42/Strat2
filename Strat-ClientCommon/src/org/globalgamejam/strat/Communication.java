@@ -72,7 +72,7 @@ public class Communication {
 		stones = 0;
 		actions = 0;
 		bonus = -1;
-		status = 0;
+		status = STATUS_IN_PROGRESS;
 	}
 
 	public void stealStone(int who) {
@@ -223,9 +223,9 @@ public class Communication {
 					case END_GAME:
 						tmp = istream.read();
 						if (tmp == 1)
-							status = 1;
+							status = STATUS_WIN;
 						else if (tmp == 0)
-							status = 2;
+							status = STATUS_LOST;
 						break;
 					}
 				}
@@ -233,7 +233,7 @@ public class Communication {
 				Gdx.app.error("Communication",
 						"StreamAnalyzer : " + io.getMessage());
 				running = false;
-				status = 3;
+				status = STATUS_DECO;
 				iD = -1;
 			}
 		}

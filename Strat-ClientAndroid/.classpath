@@ -5,8 +5,8 @@
 	<classpathentry kind="src" path="common_src"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
-	<classpathentry kind="lib" path="libs/gdx.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Strat-ClientCommon"/>
+	<classpathentry kind="lib" path="/Strat-ClientPC/libs/gdx.jar" sourcepath="/home/jackdesbwa/Donnees/GGJ/bouncingballs/libs/gdx-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

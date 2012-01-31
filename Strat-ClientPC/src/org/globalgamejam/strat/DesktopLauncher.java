@@ -60,7 +60,7 @@ public class DesktopLauncher extends JFrame implements ActionListener {
 			// Try to connect
 			try {
 				// GameRenderer creation and connection
-				GameRenderer gr = new GameRenderer(host, port);
+				GameStrat gr = new GameStrat(host, port);
 
 				// OK, launch display and hide dialog
 				new JoglApplication(gr, "Strat", 800, 480, false);
