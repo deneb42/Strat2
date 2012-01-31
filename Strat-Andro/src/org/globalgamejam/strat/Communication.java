@@ -27,6 +27,7 @@ public class Communication {
 	private OutputStream ostream;
 	private StreamAnalyzer sa;
 
+	// Blackboard data
 	private int iD;
 	private int totalId;
 	private int stones;
@@ -34,7 +35,6 @@ public class Communication {
 	private int bonus;
 	private int status;
 	private boolean[] alives;
-	private static final int MAX_CLIENTS = 6;
 
 	// Global client -> server protocol
 	private static final int STEAL_STONE = 0;
@@ -49,11 +49,12 @@ public class Communication {
 	private static final int DISCONNECT = 4;
 	private static final int END_GAME = 5;
 	
-	// Global status
+	// Global public constants
 	public static final int  STATUS_IN_PROGRESS = 0;
 	public static final int  STATUS_WIN = 1;
 	public static final int  STATUS_LOST = 2;
 	public static final int  STATUS_DECO= 3;
+	public static final int  MAX_CLIENTS = 6;
 
 	public Communication(String host, int port) throws IOException {
 		try {

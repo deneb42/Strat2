@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameRenderer implements ApplicationListener {
 
-	private static final int NB_JOUEURS = 6, NB_BONUS = 5, NB_SPRITE_LIFEBAR = 2, NB_SPRITE_BLOCKBAR = 7;
+	private static final int NB_JOUEURS = Communication.MAX_CLIENTS, NB_BONUS = 5, NB_SPRITE_LIFEBAR = 2, NB_SPRITE_BLOCKBAR = 7;
 	private static final int NB_BLOCK_MAX = 10;
 	public static String PATH_IMG = "img/";
 	
