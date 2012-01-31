@@ -317,6 +317,7 @@ public class GameRenderer implements ApplicationListener {
 	
 	public void dispose() {
 		desallocTextures();
+		com.stop();
 	}
 	
 	public void pause()  {

@@ -154,6 +154,10 @@ public class Communication {
 		sa = new StreamAnalyzer();
 		sa.start();
 	}
+	
+	public void stop() {
+		sa.end();
+	}
 
 	/**************************************************************************/
 	private class StreamAnalyzer extends Thread {
