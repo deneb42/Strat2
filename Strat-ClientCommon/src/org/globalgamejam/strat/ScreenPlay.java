@@ -7,6 +7,7 @@ public class ScreenPlay extends ScreenBg {
 	private GameStrat game;
 	private StonesGauge stonesGauge;
 	private ActionsGauge actionsGauge;
+	private BonusBar bonusBar;
 
 	public ScreenPlay(GameStrat g) {
 		super(g, "bgPhone.png");
@@ -14,9 +15,12 @@ public class ScreenPlay extends ScreenBg {
 
 		stonesGauge = new StonesGauge(game);
 		stonesGauge.setPosition(20, 40);
-		
+
 		actionsGauge = new ActionsGauge(game);
 		actionsGauge.setPosition(0, Gdx.graphics.getHeight() - 32);
+
+		bonusBar = new BonusBar(game);
+		bonusBar.setPosition(Gdx.graphics.getWidth() - 74, 0);
 	}
 
 	@Override
@@ -26,10 +30,12 @@ public class ScreenPlay extends ScreenBg {
 		if (Gdx.input.justTouched())
 			touchInteraction();
 
+		// Draw all
 		SpriteBatch batch = game.batch;
 		batch.begin();
 		stonesGauge.draw(batch);
 		actionsGauge.draw(batch);
+		bonusBar.draw(batch);
 		batch.end();
 	}
 
