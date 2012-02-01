@@ -19,8 +19,8 @@ public class CircleAvatar implements Touchable {
 		Texture texture = new Texture("img/avatar.png");
 		avatars = new Avatar[game.com.getTotalId()];
 		for (int i = 0; i < avatars.length; i++)
-			avatars[i] = new Avatar(texture, game.com.getId(), i,
-					avatars.length);
+			avatars[i] = new Avatar(texture, (game.com.getId() + i)
+					% avatars.length, i, avatars.length);
 
 		// Initial position
 		x = 0;
@@ -63,26 +63,28 @@ public class CircleAvatar implements Touchable {
 	public boolean touchUp(int x, int y, TouchManager touchManager,
 			Dragable dragDrop) {
 		// Which avatar ?
-		int avatar = whichAvatar(x - this.x, y - this.y);
-		if (avatar == -1)
+		int which = whichAvatar(x - this.x, y - this.y);
+		if (which == -1)
 			return true; // No avatar touched
+		int avatarDrop = avatars[which].getId(); 
 
 		// Drop processing
 		if (dragDrop instanceof BonusBar.Drag) {
 			int bonusId = ((BonusBar.Drag) dragDrop).getId();
-			Gdx.app.log("CircleAvartar", "Avartar " + avatar + " gets bonus "
+			Gdx.app.log("CircleAvartar", "Avartar " + avatarDrop + " gets bonus "
 					+ bonusId);
-			game.com.useBonus(bonusId, game.com.getId(), avatar);
+			game.com.useBonus(bonusId, game.com.getId(), avatarDrop);
 			return false;
 
 		} else if (dragDrop instanceof CircleAvatar.Drag) {
-			int avatarId = ((CircleAvatar.Drag) dragDrop).getId();
-			Gdx.app.log("CircleAvartar", "Avartar " + avatar + " gets avatar "
-					+ avatarId);
-			if (avatar == 0 && avatarId != 0)
-				game.com.stealStone(avatarId);
-			else if (avatarId == 0 && avatar != 0)
-				game.com.giveStone(avatarId);
+			int myId = game.com.getId();
+			int avatarDrag = ((CircleAvatar.Drag) dragDrop).getId();
+			Gdx.app.log("CircleAvartar", "Avartar " + avatarDrop + " gets avatar "
+					+ avatarDrag);
+			if (avatarDrop == myId && avatarDrag != myId)
+				game.com.stealStone(avatarDrag);
+			else if (avatarDrag == myId && avatarDrop != myId)
+				game.com.giveStone(avatarDrop);
 			return false;
 		}
 		return true;
@@ -93,10 +95,10 @@ public class CircleAvatar implements Touchable {
 	private class Avatar extends Sprite {
 		private int xrel, yrel, id;
 
-		public Avatar(Texture texture, int id, int i, int total) {
-			super(new TextureRegion(texture, (((id + i) % total) % 3) * 128,
-					(((id + i) % total) / 3) * 128, 128, 128));
-			this.id = id + i;
+		public Avatar(Texture texture, int avatarId, int i, int total) {
+			super(new TextureRegion(texture, (avatarId % 3) * 128,
+					(avatarId / 3) * 128, 128, 128));
+			this.id = avatarId;
 			xrel = (int) (x + 1.3f * RADIUS * Math.sin(2 * i * Math.PI / total));
 			yrel = (int) (y + RADIUS * Math.cos(2 * i * Math.PI / total));
 			if (i != 0)
