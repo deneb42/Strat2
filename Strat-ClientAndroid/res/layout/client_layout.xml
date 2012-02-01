@@ -1,55 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/Hbox"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_height="fill_parent" >
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo3" android:layout_gravity="right" android:layout_margin="10px"/>
+        android:layout_margin="10px"
+        android:src="@drawable/logo3" />
 
-    <TextView
-        android:id="@+id/titre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Connexion"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/tvIpDest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Adresse du serveur"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <EditText
-        android:id="@+id/etIpDest"
+    <LinearLayout
+        android:id="@+id/LinearLayout2"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text">
-        <requestFocus />
-    </EditText>
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvPortDest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Port du serveur"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <TextView
+            android:id="@+id/titre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connexion"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <EditText
-        android:id="@+id/etPortDest"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number" 
-        android:text="50000" />
+        <TextView
+            android:id="@+id/tvIpDest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adresse du serveur"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:id="@+id/bConnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Connexion" />
+        <EditText
+            android:id="@+id/etIpDest"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+        <TextView
+            android:id="@+id/tvPortDest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Port du serveur"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etPortDest"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="50000" />
+
+        <Button
+            android:id="@+id/bConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connexion" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
