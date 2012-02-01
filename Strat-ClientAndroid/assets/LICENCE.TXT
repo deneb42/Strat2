@@ -1,0 +1,1 @@
+../../Strat-ClientCommon/LICENCE.TXT
