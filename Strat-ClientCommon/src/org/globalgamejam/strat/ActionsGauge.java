@@ -37,7 +37,9 @@ public class ActionsGauge {
 			spriteNormal.draw(batch);
 			i++;
 		}
-		spriteEnd.setPosition(x + i * spriteNormal.getWidth(), y);
-		spriteEnd.draw(batch);
+		if (level > 0) {
+			spriteEnd.setPosition(x + i * spriteNormal.getWidth(), y);
+			spriteEnd.draw(batch);
+		}
 	}
 }
