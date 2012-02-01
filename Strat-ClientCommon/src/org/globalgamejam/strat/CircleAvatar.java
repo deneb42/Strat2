@@ -66,21 +66,21 @@ public class CircleAvatar implements Touchable {
 		int which = whichAvatar(x - this.x, y - this.y);
 		if (which == -1)
 			return true; // No avatar touched
-		int avatarDrop = avatars[which].getId(); 
+		int avatarDrop = avatars[which].getId();
 
 		// Drop processing
 		if (dragDrop instanceof BonusBar.Drag) {
 			int bonusId = ((BonusBar.Drag) dragDrop).getId();
-			Gdx.app.log("CircleAvartar", "Avartar " + avatarDrop + " gets bonus "
-					+ bonusId);
+			Gdx.app.log("CircleAvartar", "Avartar " + avatarDrop
+					+ " gets bonus " + bonusId);
 			game.com.useBonus(bonusId, game.com.getId(), avatarDrop);
 			return false;
 
 		} else if (dragDrop instanceof CircleAvatar.Drag) {
 			int myId = game.com.getId();
 			int avatarDrag = ((CircleAvatar.Drag) dragDrop).getId();
-			Gdx.app.log("CircleAvartar", "Avartar " + avatarDrop + " gets avatar "
-					+ avatarDrag);
+			Gdx.app.log("CircleAvartar", "Avartar " + avatarDrop
+					+ " gets avatar " + avatarDrag);
 			if (avatarDrop == myId && avatarDrag != myId)
 				game.com.stealStone(avatarDrag);
 			else if (avatarDrag == myId && avatarDrop != myId)
@@ -110,10 +110,13 @@ public class CircleAvatar implements Touchable {
 		@Override
 		public void draw(SpriteBatch spriteBatch) {
 			setPosition(x + xrel, y + yrel);
-			super.draw(spriteBatch);
+			if (game.com.isAlive(id))
+				super.draw(spriteBatch);
 		}
 
 		public boolean hit(int xrelhit, int yrelhit) {
+			if (!game.com.isAlive(id))
+				return false;
 			if (xrelhit < xrel + getOriginX() - getWidth() * getScaleX() / 2)
 				return false;
 			if (xrelhit > xrel + getOriginX() + getWidth() * getScaleX() / 2)

@@ -216,7 +216,7 @@ public class Communication {
 						break;
 					case DISCONNECT:
 						tmp = istream.read();
-						if (tmp > 0 && tmp < alives.length)
+						if (tmp >= 0 && tmp < alives.length)
 							alives[tmp] = false;
 						log("Communication", "Player " + tmp + " is gone away");
 						break;
