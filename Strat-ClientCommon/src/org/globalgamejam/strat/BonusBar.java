@@ -14,8 +14,7 @@ public class BonusBar implements Touchable {
 	// Internal data
 	private GameStrat game;
 	private Sprite[] bonus;
-	private int x, y, bonusposition;
-	private boolean bonusTaken;
+	private int x, y, bonusPosition, bonusOld, bonusTakenId;
 
 	public BonusBar(GameStrat g) {
 		game = g;
@@ -30,8 +29,9 @@ public class BonusBar implements Touchable {
 		// Initial position
 		x = 0;
 		y = 0;
-		bonusposition = -100;
-		bonusTaken = false;
+		bonusPosition = -100;
+		bonusTakenId = -1;
+		bonusOld = -1;
 	}
 
 	public void setPosition(int x, int y) {
@@ -44,17 +44,20 @@ public class BonusBar implements Touchable {
 		// If bonus available
 		if (bonusId >= 0 && bonusId < bonus.length) {
 			// Random position
-			if (bonusposition < 0)
-				bonusposition = (int) ((Math.random() * (Gdx.graphics
+			if (bonusId != bonusOld) {
+				bonusPosition = (int) ((Math.random() * (Gdx.graphics
 						.getHeight() - 64 - 2 * MARGIN))) + MARGIN;
+				bonusOld = bonusId;
+			}
+
 			// Draw
-			if (!bonusTaken) {
-				bonus[bonusId].setPosition(x, y + bonusposition);
+			if (bonusTakenId != bonusId) {
+				bonus[bonusId].setPosition(x, y + bonusPosition);
 				bonus[bonusId].draw(batch);
 			}
 		} else {
-			bonusposition = -100; // To force random for next bonus
-			bonusTaken = false;
+			bonusOld = -1;
+			bonusTakenId = -1;
 		}
 	}
 
@@ -62,9 +65,9 @@ public class BonusBar implements Touchable {
 		// If don't hit, return
 		if (x < this.x)
 			return true;
-		if (y > this.y + bonusposition + 64)
+		if (y > this.y + bonusPosition + 64)
 			return true;
-		if (y < this.y + bonusposition)
+		if (y < this.y + bonusPosition)
 			return true;
 		if (x > this.x + 64)
 			return true;
@@ -74,7 +77,7 @@ public class BonusBar implements Touchable {
 		if (bonusId >= 0 && bonusId < bonus.length) {
 			Gdx.app.log("BonusBar", "Bonus " + bonusId + " drag");
 			touch.drag(new Drag(bonusId));
-			bonusTaken = true;
+			bonusTakenId = bonusId;
 		}
 		return false;
 	}
