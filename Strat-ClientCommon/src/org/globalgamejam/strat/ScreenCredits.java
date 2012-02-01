@@ -12,6 +12,8 @@ public class ScreenCredits extends ScreenBg {
 
 	@Override
 	public void render(float delta) {
+		if (game.com.isConnected())
+			game.setScreen(new ScreenPlay(game));
 		if (Gdx.input.justTouched())
 			game.setScreen(scrOld);
 		super.render(delta);

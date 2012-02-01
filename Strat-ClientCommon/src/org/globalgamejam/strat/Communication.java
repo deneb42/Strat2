@@ -197,6 +197,7 @@ public class Communication {
 					case START_GAME:
 						iD = istream.read();
 						totalId = istream.read();
+						status = STATUS_IN_PROGRESS;
 						for (int i = 0; i < totalId; i++)
 							alives[i] = true;
 						log("Communication", "Start game : " + iD + "/"
@@ -226,6 +227,11 @@ public class Communication {
 							status = STATUS_WIN;
 						else if (tmp == 0)
 							status = STATUS_LOST;
+						iD = -1;
+						for (int i = 0; i < MAX_CLIENTS; i++)
+							alives[i] = false;
+						iD = -1;
+						bonus = -1;
 						break;
 					}
 				}
