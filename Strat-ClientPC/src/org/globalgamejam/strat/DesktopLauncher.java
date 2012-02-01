@@ -63,7 +63,7 @@ public class DesktopLauncher extends JFrame implements ActionListener {
 				GameStrat gr = new GameStrat(host, port);
 
 				// OK, launch display and hide dialog
-				new JoglApplication(gr, "Strat", 800, 480, false);
+				new JoglApplication(gr, "Strat", 800, 480, false).getJFrame().setResizable(false);
 				this.dispose();
 			} catch (IOException ex) {
 				// Inform user of the error
