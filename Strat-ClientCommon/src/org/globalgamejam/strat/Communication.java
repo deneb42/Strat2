@@ -26,6 +26,7 @@ public class Communication {
 	private Socket socket;
 	private OutputStream ostream;
 	private StreamAnalyzer sa;
+	private boolean logReception;
 
 	// Blackboard data
 	private int iD;
@@ -57,11 +58,11 @@ public class Communication {
 	public static final int MAX_CLIENTS = 6;
 
 	public Communication(String host, int port) throws IOException {
-		// Socket creation (throws exception on error)
-		this.socket = new Socket(host, port);
-
-		// Get output stream
+		// Initialize internal objects
+		this.socket = new Socket(host, port); // Throws exception on error
 		ostream = socket.getOutputStream();
+		sa = new StreamAnalyzer();
+		logReception = false;
 
 		// Initialize internal data
 		alives = new boolean[MAX_CLIENTS];
@@ -133,7 +134,7 @@ public class Communication {
 		return bonus;
 	}
 
-	// return one of the STATUS_* value
+	// Returns one of the STATUS_* value
 	public int getStatus() {
 		return status;
 	}
@@ -148,8 +149,11 @@ public class Communication {
 		return false;
 	}
 
+	public void activateLogReception(boolean log) {
+		logReception = log;
+	}
+
 	public void start() {
-		sa = new StreamAnalyzer();
 		sa.start();
 	}
 
@@ -195,30 +199,26 @@ public class Communication {
 						totalId = istream.read();
 						for (int i = 0; i < totalId; i++)
 							alives[i] = true;
-						Gdx.app.log("Communication", "Start game : " + iD + "/"
+						log("Communication", "Start game : " + iD + "/"
 								+ totalId);
 						break;
 					case STONE_QUANTITY:
 						stones = istream.read();
-						Gdx.app.log("Communication", "Stones update : "
-								+ stones);
+						log("Communication", "Stones update : " + stones);
 						break;
 					case ACTION_GAUGE:
 						actions = istream.read();
-						Gdx.app.log("Communication", "Action power update : "
-								+ actions);
+						log("Communication", "Action power update : " + actions);
 						break;
 					case OBTAIN_BONUS:
 						bonus = istream.read();
-						Gdx.app.log("Communication", "Try to catch bonus : "
-								+ bonus);
+						log("Communication", "Try to catch bonus : " + bonus);
 						break;
 					case DISCONNECT:
 						tmp = istream.read();
 						if (tmp > 0 && tmp < alives.length)
 							alives[tmp] = false;
-						Gdx.app.log("Communication", "Player " + tmp
-								+ " is gone away");
+						log("Communication", "Player " + tmp + " is gone away");
 						break;
 					case END_GAME:
 						tmp = istream.read();
@@ -236,6 +236,11 @@ public class Communication {
 				status = STATUS_DECO;
 				iD = -1;
 			}
+		}
+
+		private void log(String arg0, String arg1) {
+			if (logReception)
+				Gdx.app.log(arg0, arg1);
 		}
 	}
 }

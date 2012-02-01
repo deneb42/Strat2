@@ -9,6 +9,7 @@ public class ScreenPlay extends ScreenBg {
 	private ActionsGauge actionsGauge;
 	private BonusBar bonusBar;
 	private CircleAvatar circleAvatar;
+	private TouchManager touchManager;
 
 	public ScreenPlay(GameStrat g) {
 		super(g, "bgPhone.png");
@@ -25,6 +26,10 @@ public class ScreenPlay extends ScreenBg {
 
 		circleAvatar = new CircleAvatar(game);
 		circleAvatar.setPosition(350, 160);
+
+		touchManager = new TouchManager();
+		touchManager.add(bonusBar);
+		touchManager.add(circleAvatar);
 	}
 
 	@Override
@@ -39,14 +44,11 @@ public class ScreenPlay extends ScreenBg {
 			game.setScreen(new ScreenLost(game));
 		else if (status == Communication.STATUS_DECO)
 			game.setScreen(new ScreenDeco(game));
-		if (status != Communication.STATUS_IN_PROGRESS) {
-			Gdx.app.log("Status", "" + status);
+		if (status != Communication.STATUS_IN_PROGRESS)
 			return;
-		}
 
 		// Process touch interaction
-		if (Gdx.input.justTouched())
-			touchInteraction();
+		touchManager.touchInteraction();
 
 		// Draw all
 		SpriteBatch batch = game.batch;
@@ -55,11 +57,7 @@ public class ScreenPlay extends ScreenBg {
 		actionsGauge.draw(batch);
 		bonusBar.draw(batch);
 		circleAvatar.draw(batch);
+		touchManager.draw(batch);
 		batch.end();
-	}
-
-	private void touchInteraction() {
-		if (Gdx.input.getX() < 100)
-			Gdx.app.log("Touch", "Touch");
 	}
 }
