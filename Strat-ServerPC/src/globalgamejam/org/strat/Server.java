@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
+	
 	// Global server constants
 	private static final int SERVER_PORT = 50000;
 	private static final int MAX_CLIENTS = 6;
 	private static final int SERVER_TIMEOUT = 1000;
+	private static final int SERVER_WAIT = 10;
 	
 	// Global client -> server protocol
 	private static final int STEAL_STONE = 0;
@@ -40,6 +42,7 @@ public class Server {
 	private static final int OBTAIN_BONUS = 3;
 	private static final int DISCONNECT = 4;
 	private static final int END_GAME = 5;
+	private static final int SENSING = 6;
 	
 	// Internal objects
 	private Game game = null;
@@ -118,7 +121,8 @@ public class Server {
 	/**************************************************************************/
 	private class Connection extends Thread {
 
-		private boolean running;
+		// Connection wizard is running
+		private boolean running = false;
 		
 		/**************************************************************************/
 		public void start() {
@@ -134,9 +138,9 @@ public class Server {
 		
 		/**************************************************************************/
 		public void run() {
-			// Open the server listener socket
 			ServerSocket serverSocket;
 			try {
+				// Open the server listener socket
 				serverSocket = new ServerSocket(SERVER_PORT);
 				serverSocket.setSoTimeout(SERVER_TIMEOUT);
 				System.out.println("Server : listening on port = " + SERVER_PORT);
@@ -149,12 +153,14 @@ public class Server {
 			// Listen to client connections
 			while (running && clients.size() < MAX_CLIENTS) {
 				try {
-					// Create the client
+					// Create the client socket
 					Socket socket = serverSocket.accept();
-					clients.add(new ClientCom(clients.size(), socket));
-					// Add to the game
-					game.connect(clients.size() - 1);
-					System.out.println("Server : adding client iD = " + (clients.size() - 1));
+					socket.setSoTimeout(SERVER_TIMEOUT);
+					// Store the client
+					int iD = clients.size();
+					clients.add(new ClientCom(iD, socket));
+					game.connect(iD);
+					System.out.println("Server : adding client iD = " + iD);
 				} catch (SocketTimeoutException to) {
 				} catch (Exception ex) {
 					System.out.println("Server : unable to register client "
@@ -169,10 +175,12 @@ public class Server {
 	/**************************************************************************/
 	private class ClientCom extends Thread {
 		
+		// Client attributes
 		private int iD;
 		private Socket socket = null;
-		private boolean running;
+		private boolean running = false;
 		
+		/**************************************************************************/
 		public ClientCom(int iD, Socket client) {
 			this.iD = iD;
 			this.socket = client;
@@ -189,49 +197,57 @@ public class Server {
 			running = false;
 			try {this.join();} catch (Exception ex) {}
 		}
+
+		/**************************************************************************/
+		private int readNoWait(InputStream istream) throws IOException {
+			while (running) {
+				if (istream.available() > 0) {
+					int data = istream.read(); 
+					if (data < 0) throw new IOException();
+					return data;
+				}
+			} throw new IOException();
+		}
 		
 		/**************************************************************************/
 		public void run() {
-			// Open the input stream
 			InputStream istream;
 			try {
+				// Open the input stream
 				istream = socket.getInputStream();
 				while (running) {
 					int bonus, to, from;
-					// Get the message
-					int cmd = istream.read();
-					if (cmd < 0) break;
+					// Get message packet
+					int cmd = readNoWait(istream);
 					// Interpret the message
 					switch (cmd) {
 					case STEAL_STONE:
-						to = istream.read();
+						to = readNoWait(istream);
 						if (to >= clients.size()) break;
 						game.stealStone(iD, to);
 						break;
 					case GIVE_STONE:
-						to = istream.read();
+						to = readNoWait(istream);
 						if (to >= clients.size()) break;
 						game.giveStone(iD, to);
 						break;
 					case USE_BONUS:
-						bonus = istream.read();
-						from = istream.read();
-						to = istream.read();
+						bonus = readNoWait(istream);
+						from = readNoWait(istream);
+						to = readNoWait(istream);
 						if (to > clients.size() || from > clients.size()) break;
 						game.useBonus(iD, bonus, from, to);
 						break;
 					}
 				}
-			} catch (IOException io) {
-				game.disconnect(iD);
-				running = false;
-			}
+			} catch (IOException io) {running = false;}
+			// Signal client disconnection
+			game.disconnect(iD);
 		}
 		
 		/**************************************************************************/
 		public void startGame(int nb) {
 			if (!running) return;
-			// Open the stream
 			OutputStream ostream;
 			try {
 				// Create the output stream
@@ -244,14 +260,12 @@ public class Server {
 				// Send the message
 				ostream.write(message);
 			} catch (IOException io) {
-				if (running) end();
-				game.disconnect(iD);
+				end();
 			}
 		}
 		
 		public void endGame(boolean winner) {
 			if (!running) return;
-			// Open the stream
 			OutputStream ostream;
 			try {
 				// Create the output stream
@@ -263,14 +277,13 @@ public class Server {
 				// Send the message
 				ostream.write(message);
 			} catch (IOException io) {
-				if (running) end();
+				end();
 			}
 		}
 		
 		/**************************************************************************/
 		public void obtainBonus(int bonus) {
 			if (!running) return;
-			// Open the stream
 			OutputStream ostream;
 			try {
 				// Create the output stream
@@ -282,14 +295,12 @@ public class Server {
 				// Send the message
 				ostream.write(message);
 			} catch (IOException io) {
-				if (running) end();
-				game.disconnect(iD);
+				end();
 			}
 		}
 		
 		public void update(int stones, int actions) {
 			if (!running) return;
-			// Open the stream
 			OutputStream ostream;
 			try {
 				// Create the output stream
@@ -303,14 +314,12 @@ public class Server {
 				// Send the message
 				ostream.write(message);
 			} catch (IOException io) {
-				if (running) end();
-				game.disconnect(iD);
+				end();
 			}
 		}
 		
 		public void disconnect(int iD) {
 			if (!running) return;
-			// Open the stream
 			OutputStream ostream;
 			try {
 				// Create the output stream
@@ -322,8 +331,7 @@ public class Server {
 				// Send the message
 				ostream.write(message);
 			} catch (IOException io) {
-				if (running) end();
-				game.disconnect(this.iD);
+				end();
 			}
 		}
 	}
