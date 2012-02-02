@@ -18,6 +18,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +70,7 @@ public class OlympeScreen implements ActionListener {
 		background.setUndecorated(true);
 		background.setResizable(false);
 		background.setTitle("Olympe");
-
+				
 		// Create the connection dialog
 		dialog = new JDialog();
 		dialog.setAlwaysOnTop(true);

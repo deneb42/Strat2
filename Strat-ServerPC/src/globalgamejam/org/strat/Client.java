@@ -47,15 +47,17 @@ public class Client extends Thread {
 	public Client(int iD, Socket client) {
 		this.iD = iD;
 		this.socket = client;
+		this.server = null;
+
+		// Start the thread
+		running = true;
+		super.start();
 	}
 
 	/**************************************************************************/
 	public void startGame(Server server, int nb) {
 		// Prepare the client for listening
 		this.server = server;
-		this.running = true;
-		super.start();
-
 		// Send the start message
 		try {
 			OutputStream ostream = socket.getOutputStream();
@@ -73,15 +75,9 @@ public class Client extends Thread {
 	}
 
 	public void endGame(boolean looser) {
-		// Stop the listening
-		if (!running) return;
-		running = false;
-		try {
-			this.join();
-		} catch (InterruptedException ex) {
-		}
-
-		// Send the end message
+		if (!running)
+			return;
+		// Send the stop message
 		try {
 			OutputStream ostream = socket.getOutputStream();
 			// Prepare the message
@@ -91,9 +87,9 @@ public class Client extends Thread {
 			// Send the message
 			ostream.write(message);
 		} catch (IOException io) {
+			this.running = false;
 			server.disconnectClient(iD);
 		}
-		
 		// Detach from server
 		this.server = null;
 	}
@@ -111,29 +107,32 @@ public class Client extends Thread {
 				switch (cmd) {
 				case STEAL_STONE:
 					to = readNoWait(istream);
-					server.getGame().stealStone(iD, to);
+					if (server != null)
+						server.getGame().stealStone(iD, to);
 					break;
 				case GIVE_STONE:
 					to = readNoWait(istream);
-					server.getGame().giveStone(iD, to);
+					if (server != null)
+						server.getGame().giveStone(iD, to);
 					break;
 				case USE_BONUS:
 					bonus = readNoWait(istream);
 					from = readNoWait(istream);
 					to = readNoWait(istream);
-					server.getGame().useBonus(iD, bonus, from, to);
+					if (server != null)
+						server.getGame().useBonus(iD, bonus, from, to);
 					break;
 				}
 			}
 		} catch (IOException io) {
 			running = false;
-			server.disconnectClient(iD);
-		} catch (InterruptedException ex) {
+			if (server != null)
+				server.disconnectClient(iD);
 		}
 	}
 
 	/**************************************************************************/
-	private int readNoWait(InputStream istream) throws IOException , InterruptedException {
+	private int readNoWait(InputStream istream) throws IOException {
 		while (running) {
 			int data;
 			try {
@@ -141,10 +140,12 @@ public class Client extends Thread {
 			} catch (SocketTimeoutException ex) {
 				continue;
 			}
-			if (data < 0) throw new IOException();
-			else return data;
+			if (data < 0)
+				throw new IOException();
+			else
+				return data;
 		}
-		throw new InterruptedException();
+		throw new IOException();
 	}
 
 	public void obtainBonus(int bonus) {
@@ -204,7 +205,8 @@ public class Client extends Thread {
 	/**************************************************************************/
 	public boolean sensing() {
 		try {
-			if (socket == null) return false;
+			if (socket == null)
+				return false;
 			OutputStream ostream = socket.getOutputStream();
 			ostream.write(SENSING);
 		} catch (IOException io) {
@@ -212,11 +214,18 @@ public class Client extends Thread {
 		}
 		return true;
 	}
-	
+
 	public void close() {
-		try {			
+		try {
+			// Stop the thread
+			if (running) {
+				running = false;
+				super.join();
+			}
+			// Try to close the socket
 			socket.close();
 			socket = null;
-		}catch (IOException io) {}
+		} catch (Exception ex) {
+		}
 	}
 }

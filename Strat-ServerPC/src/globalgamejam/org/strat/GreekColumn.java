@@ -26,7 +26,7 @@ public class GreekColumn {
 	// Columns constants
 	public static final int NB_COLUMNS = 6;
 	public static final int NB_STONES = 10;
-	public static final int START_STONES = 10;
+	public static final int START_STONES = 1;
 	public static final int MAX_STONES = 10;
 
 	// Image resources
