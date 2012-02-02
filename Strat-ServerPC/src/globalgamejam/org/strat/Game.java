@@ -47,17 +47,17 @@ public class Game {
 	private static final int NB_BONUS_NORMAUX = 4;
 
 	// Game bonus
-	private static final int PLUSONE_BONUS = 0;
+	private static final int EMPTYACTION_BONUS = 0;
 	private static final int MINUSONE_BONUS = 1;
 	private static final int FILLACTION_BONUS = 2;
-	private static final int EMPTYACTION_BONUS = 3;
+	private static final int PLUSONE_BONUS = 3;
 	private static final int SWITCH_BONUS = 4;
 
-	private static final int PLUSONE_ACTION = 2;
-	private static final int MINUSONE_ACTION = 2;
-	private static final int FILL_ACTION = 3;
-	private static final int EMPTY_ACTION = 4;
-	private static final int SWITCH_ACTION = 5;
+	private static final int EMPTYACTION_COST = 4;
+	private static final int MINUSONE_COST = 2;
+	private static final int FILLACTION_COST = 2;
+	private static final int PLUSONE_COST = 1;	
+	private static final int SWITCH_COST = 8;
 
 	// Game current state
 	private static final int UNINIT = 0;
@@ -221,13 +221,13 @@ public class Game {
 		switch (bonus) {
 		case PLUSONE_BONUS:
 			// Check if gift is possible
-			if (pUser.getActions() < PLUSONE_ACTION) {
+			if (pUser.getActions() < PLUSONE_COST) {
 				mutex.unlock();
 				return;
 			}
 			// Get one free stone
 			pTo.addStones(1);
-			pUser.addActions(- PLUSONE_ACTION);
+			pUser.addActions(- PLUSONE_COST);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[to]
@@ -235,13 +235,13 @@ public class Game {
 			break;
 		case MINUSONE_BONUS:
 			// Check if gift is possible
-			if (pUser.getActions() < MINUSONE_ACTION) {
+			if (pUser.getActions() < MINUSONE_COST) {
 				mutex.unlock();
 				return;
 			}
 			// Suppress one stone
 			pTo.addStones(-1);
-			pUser.addActions(- MINUSONE_ACTION);
+			pUser.addActions(- MINUSONE_COST);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[to]
@@ -249,13 +249,13 @@ public class Game {
 			break;
 		case FILLACTION_BONUS:
 			// Check if gift is possible
-			if (pUser.getActions() < FILL_ACTION) {
+			if (pUser.getActions() < FILLACTION_COST) {
 				mutex.unlock();
 				return;
 			}
 			// Fill the action bar
 			pTo.setActions(Player.MAX_ACTIONS);
-			pUser.addActions(- FILL_ACTION);
+			pUser.addActions(- FILLACTION_COST);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[to]
@@ -263,13 +263,13 @@ public class Game {
 			break;
 		case EMPTYACTION_BONUS:
 			// Check if gift is possible
-			if (pUser.getActions() < EMPTY_ACTION) {
+			if (pUser.getActions() < EMPTYACTION_COST) {
 				mutex.unlock();
 				return;
 			}
 			// Empty one action bar
 			pTo.setActions(0);
-			pUser.addActions(- EMPTY_ACTION);
+			pUser.addActions(- EMPTYACTION_COST);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[to]
@@ -277,7 +277,7 @@ public class Game {
 			break;
 		case SWITCH_BONUS:
 			// Check if gift is possible
-			if (pUser.getActions() < SWITCH_ACTION) {
+			if (pUser.getActions() < SWITCH_COST) {
 				mutex.unlock();
 				return;
 			}
@@ -285,7 +285,7 @@ public class Game {
 			int tmp = pTo.getActions();
 			pTo.setActions(pFrom.getActions());
 			pFrom.setActions(tmp);
-			pUser.addActions(- SWITCH_ACTION);
+			pUser.addActions(- SWITCH_COST);
 			sound.playSpecialBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[from]
@@ -340,7 +340,7 @@ public class Game {
 			// Update the whole game
 			gameUpdateStonesActions();
 			gameUpdateBonus();
-			gameScreen.repaint();
+			if (gameScreen instanceof GameScreen) gameScreen.repaint();
 			// Send update to each client
 			for (int i = 0; i < players.size(); i++) {
 				Player player = players.get(i);
@@ -357,7 +357,7 @@ public class Game {
 			// Actualize column heights
 			if (--stonesCounter == 0) {
 				for (int i = 0; i < players.size(); i++) {
-					// Check neighbours
+					// Check neighbors
 					players.get(i).addStones(-1);
 					if (!getWeakness(i)) players.get(i).addStones(-1);
 					else players.get(i).addStones(-2);

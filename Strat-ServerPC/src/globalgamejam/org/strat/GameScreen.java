@@ -94,11 +94,14 @@ public class GameScreen extends JDialog {
 		
 		// Load the background images
 		try {
+			// Load flames
 			flammes = new BufferedImage[FLAMMES_NB];
 			for (int i = 0; i < FLAMMES_NB; i ++) {
 				flammes[i] = ImageIO.read(new File(flammePng + (i + 1) + ".png"));
 			}
+			// Load plate image
 			plate = ImageIO.read(new File(platePng));
+			// Load credit screen
 			credits = ImageIO.read(new File(creditsPng));
 		} catch (IOException io) {
 			System.out.println("GameScreen : unable to load some graphics "
@@ -128,9 +131,6 @@ public class GameScreen extends JDialog {
 			Player player = game.getPlayer(i);
 			columns[i].paint(graphic, player.getStones());
 		}
-		//for (int i = 0; i < 6; i ++) {
-		//	columns[i].paint(graphic, 10);
-		//}
 		
 		// Update dialog
 		g.drawImage(buffer, 0, 0, null);
