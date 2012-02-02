@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="30" version="2.0">
+<workbench progressCount="32" version="2.0">
 <workbenchAdvisor/>
 <window height="768" maximized="true" width="1024" x="378" y="20">
 <fastViewData fastViewLocation="1024"/>
@@ -39,18 +39,12 @@
 <part id="3"/>
 <part id="4"/>
 <part id="5"/>
+<part id="6"/>
+<part id="7"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Game.java" partName="Game.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/Game.java" title="Game.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Game.java" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/Game.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="883" selectionTopPixel="4530"/>
-</editor>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameScreen.java" partName="GameScreen.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java" title="GameScreen.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2508" selectionTopPixel="900"/>
-</editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="OlympeScreen.java" partName="OlympeScreen.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/OlympeScreen.java" title="OlympeScreen.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/OlympeScreen.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/OlympeScreen.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1128" selectionTopPixel="108"/>
@@ -59,13 +53,29 @@
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/Olympe.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3055" selectionTopPixel="1625"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Client.java" partName="Client.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/Client.java" title="Client.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Client.java" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Client.java" partName="Client.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/Client.java" title="Client.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Client.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/Client.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1271" selectionTopPixel="272"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="547" selectionTopPixel="2247"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameScreen.java" partName="GameScreen.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java" title="GameScreen.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="33" selectionOffset="1569" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GreekColumn.java" partName="GreekColumn.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/GreekColumn.java" title="GreekColumn.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/GreekColumn.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/GreekColumn.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1097" selectionTopPixel="85"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Player.java" partName="Player.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/Player.java" title="Player.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Player.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/Player.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2400" selectionTopPixel="105"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Game.java" partName="Game.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/Game.java" title="Game.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Game.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/Game.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8542" selectionTopPixel="4566"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Server.java" partName="Server.java" path="C:/strat/git/Strat2/Strat-ServerPC/src/globalgamejam/org/strat/Server.java" title="Server.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Server.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Strat-ServerPC/src/globalgamejam/org/strat/Server.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1030" selectionTopPixel="69"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1223" selectionTopPixel="476"/>
 </editor>
 </editors>
 <views>
@@ -97,7 +107,6 @@
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
 <expanded>
-<category IMemento.internal.id="Warnings (14 items)"/>
 <category IMemento.internal.id="Warnings"/>
 <category IMemento.internal.id="Errors"/>
 </expanded>
@@ -407,163 +416,162 @@
 <workingSets/>
 <navigationHistory>
 <editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/Game.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/Olympe.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/OlympeScreen.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/GreekColumn.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/Player.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/Game.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/Client.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/Server.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/Strat-ServerPC/src/globalgamejam/org/strat/Server.java"/>
 </editors>
-<item historyLabel="Game.java" index="0">
-<position info="not_deleted" x="3758" y="0"/>
+<item historyLabel="Client.java" index="4">
+<position info="not_deleted" x="2565" y="0"/>
+</item>
+<item historyLabel="Client.java" index="4">
+<position info="not_deleted" x="2249" y="0"/>
+</item>
+<item historyLabel="Client.java" index="4">
+<position info="not_deleted" x="2132" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="3966" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="4013" y="0"/>
+</item>
+<item historyLabel="Player.java" index="2">
+<position info="not_deleted" x="2631" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="4013" y="0"/>
+</item>
+<item historyLabel="GreekColumn.java" index="1">
+<position info="not_deleted" x="2686" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="4013" y="0"/>
 </item>
 <item historyLabel="Server.java" index="5">
-<position info="not_deleted" x="1252" y="0"/>
+<position info="not_deleted" x="1187" y="0"/>
+</item>
+<item historyLabel="Server.java" index="5">
+<position info="not_deleted" x="1223" y="0"/>
+</item>
+<item historyLabel="Client.java" index="4">
+<position info="not_deleted" x="2132" y="0"/>
 </item>
 <item historyLabel="Client.java" index="4">
 <position info="not_deleted" x="2020" y="0"/>
 </item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="3643" y="0"/>
+<item historyLabel="Server.java" index="5">
+<position info="not_deleted" x="1377" y="0"/>
 </item>
-<item historyLabel="Game.java" index="0">
-<position info="not_deleted" x="3803" y="0"/>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="4064" y="0"/>
 </item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="3592" y="0"/>
-</item>
-<item historyLabel="Olympe.java" index="1">
-<position info="not_deleted" x="776" y="0"/>
-</item>
-<item historyLabel="Game.java" index="0">
-<position info="not_deleted" x="3668" y="0"/>
+<item historyLabel="Server.java" index="5">
+<position info="not_deleted" x="1248" y="0"/>
 </item>
 <item historyLabel="Client.java" index="4">
-<position info="not_deleted" x="1766" y="0"/>
+<position info="not_deleted" x="3447" y="0"/>
 </item>
-<item historyLabel="Server.java" index="6">
-<position/>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="3966" y="0"/>
 </item>
-<item historyLabel="Olympe.java" index="1">
-<position info="not_deleted" x="535" y="0"/>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="4013" y="0"/>
 </item>
-<item historyLabel="Game.java" index="0">
-<position info="not_deleted" x="3668" y="0"/>
+<item historyLabel="Player.java" index="2">
+<position info="not_deleted" x="2631" y="0"/>
 </item>
-<item historyLabel="Server.java" index="6">
-<position info="not_deleted" x="1341" y="0"/>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="4013" y="0"/>
 </item>
-<item historyLabel="Client.java" index="4">
-<position info="not_deleted" x="1766" y="0"/>
+<item historyLabel="GreekColumn.java" index="1">
+<position info="not_deleted" x="2686" y="0"/>
 </item>
-<item historyLabel="Client.java" index="4">
-<position info="not_deleted" x="3458" y="0"/>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="4013" y="0"/>
 </item>
-<item historyLabel="Server.java" index="6">
-<position info="not_deleted" x="1341" y="0"/>
+<item historyLabel="Server.java" index="5">
+<position info="not_deleted" x="1187" y="0"/>
 </item>
-<item historyLabel="Server.java" index="6">
-<position info="not_deleted" x="1731" y="0"/>
-</item>
-<item historyLabel="Game.java" index="0">
-<position info="not_deleted" x="11283" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="1011" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="1011" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="5299" y="45"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="1869" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="1766" y="225"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="2087" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="1798" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="2087" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="2578" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="3208" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="1798" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="1457" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="3208" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="3205" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="3562" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="4976" y="0"/>
-</item>
-<item historyLabel="Game.java" index="0">
-<position info="not_deleted" x="883" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="3562" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="1231" y="0"/>
+<item historyLabel="Server.java" index="5">
+<position info="not_deleted" x="1223" y="0"/>
 </item>
 <item historyLabel="Client.java" index="4">
-<position info="not_deleted" x="3458" y="0"/>
-</item>
-<item historyLabel="Server.java" index="6">
-<position info="not_deleted" x="1030" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="1429" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="1231" y="0"/>
-</item>
-<item historyLabel="Olympe.java" index="1">
-<position info="not_deleted" x="535" y="0"/>
-</item>
-<item historyLabel="Olympe.java" index="1">
-<position info="not_deleted" x="3055" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="1231" y="0"/>
-</item>
-<item historyLabel="OlympeScreen.java" index="2">
-<position info="not_deleted" x="1128" y="0"/>
-</item>
-<item historyLabel="GameScreen.java" index="3">
-<position info="not_deleted" x="2508" y="0"/>
-</item>
-<item historyLabel="Game.java" index="0">
-<position info="not_deleted" x="883" y="0"/>
+<position info="not_deleted" x="2132" y="0"/>
 </item>
 <item historyLabel="Client.java" index="4">
-<position info="not_deleted" x="2283" y="51"/>
+<position info="not_deleted" x="2130" y="0"/>
+</item>
+<item historyLabel="Server.java" index="5">
+<position info="not_deleted" x="1223" y="0"/>
 </item>
 <item historyLabel="Client.java" index="4">
-<position info="not_deleted" x="2453" y="0"/>
+<position info="not_deleted" x="547" y="0"/>
 </item>
-<item active="true" historyLabel="Client.java" index="4">
-<position info="not_deleted" x="1172" y="6"/>
+<item historyLabel="GameScreen.java" index="0">
+<position info="not_deleted" x="3302" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="10636" y="0"/>
+</item>
+<item historyLabel="Client.java" index="4">
+<position info="not_deleted" x="547" y="0"/>
+</item>
+<item historyLabel="Server.java" index="5">
+<position info="not_deleted" x="1223" y="0"/>
+</item>
+<item historyLabel="GreekColumn.java" index="1">
+<position info="not_deleted" x="747" y="0"/>
+</item>
+<item historyLabel="GameScreen.java" index="0">
+<position info="not_deleted" x="3303" y="0"/>
+</item>
+<item historyLabel="GameScreen.java" index="0">
+<position info="not_deleted" x="1569" y="33"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="10636" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="11996" y="0"/>
+</item>
+<item historyLabel="GreekColumn.java" index="1">
+<position info="not_deleted" x="3700" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="11996" y="0"/>
+</item>
+<item historyLabel="GreekColumn.java" index="1">
+<position info="not_deleted" x="1097" y="0"/>
+</item>
+<item historyLabel="GameScreen.java" index="0">
+<position info="not_deleted" x="1569" y="33"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="11996" y="0"/>
+</item>
+<item historyLabel="GreekColumn.java" index="1">
+<position info="not_deleted" x="976" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="11996" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="9480" y="0"/>
+</item>
+<item historyLabel="GreekColumn.java" index="1">
+<position info="not_deleted" x="1097" y="0"/>
+</item>
+<item historyLabel="Game.java" index="3">
+<position info="not_deleted" x="8542" y="0"/>
+</item>
+<item historyLabel="Server.java" index="5">
+<position info="not_deleted" x="1223" y="0"/>
+</item>
+<item active="true" historyLabel="Player.java" index="2">
+<position info="not_deleted" x="2631" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -593,23 +601,26 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Server.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Server.java">
 <persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/Server.java"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Client.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Client.java">
-<persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/Client.java"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Game.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Game.java">
+<persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/Game.java"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Player.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Player.java">
 <persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/Player.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GreekColumn.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/GreekColumn.java">
+<persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/GreekColumn.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameScreen.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java">
+<persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Client.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Client.java">
+<persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/Client.java"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="DesktopLauncher.java" tooltip="Strat-ClientPC/src/org/globalgamejam/strat/DesktopLauncher.java">
 <persistable path="/Strat-ClientPC/src/org/globalgamejam/strat/DesktopLauncher.java"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ConnectionScreen.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/ConnectionScreen.java">
 <persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/ConnectionScreen.java"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameScreen.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java">
-<persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/GameScreen.java"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Game.java" tooltip="Strat-ServerPC/src/globalgamejam/org/strat/Game.java">
-<persistable path="/Strat-ServerPC/src/globalgamejam/org/strat/Game.java"/>
 </file>
 </mruList>
 </workbench>
