@@ -83,4 +83,9 @@ public class ConnectionScreen extends JDialog implements ActionListener {
 	{
 		clientListModel.add(clientListModel.size(), name);
 	}
+	
+	public void removeClient(int iD)
+	{
+		clientListModel.removeElementAt(iD);
+	}
 }

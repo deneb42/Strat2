@@ -69,13 +69,11 @@ public class Game {
 
 	// Game method
 	public Game() {
-		gameState = UNINIT;
-		
 		conScreen = new ConnectionScreen(this);
 		gameScreen = new GameScreen(this);
 		sound = new Sounds();
-		
 		mutex = new ReentrantLock();
+		this.gameState = UNINIT;
 	}
 
 	/**************************************************************************/
@@ -133,7 +131,7 @@ public class Game {
 			} catch (Exception ex) {
 			}
 		}
-		// Find the game loosers
+		// Find the game losers
 		for (int i = 0; i < players.size(); i ++) {
 			if (players.get(i).isStonesEmpty())
 				server.endGame(i, false);
@@ -319,7 +317,8 @@ public class Game {
 	}
 
 	public void disconnect(int iD) {
-		server.disconnectClient(iD);
+		players.remove(iD);
+		conScreen.removeClient(iD);
 	}
 
 	/**************************************************************************/

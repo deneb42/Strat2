@@ -23,13 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
-	
+
 	// Global server constants
 	private static final int SERVER_PORT = 50000;
 	private static final int MAX_CLIENTS = 6;
-	private static final int SERVER_TIMEOUT = 1000;
-	private static final int SERVER_WAIT = 10;
-	
+	private static final int SERVER_TIMEOUT = 100;
+
 	// Global client -> server protocol
 	private static final int STEAL_STONE = 0;
 	private static final int GIVE_STONE = 1;
@@ -43,12 +42,12 @@ public class Server {
 	private static final int DISCONNECT = 4;
 	private static final int END_GAME = 5;
 	private static final int SENSING = 6;
-	
+
 	// Internal objects
 	private Game game = null;
 	private List<ClientCom> clients = null;
 	private Connection connection = null;
-		
+
 	// Server constructor
 	public Server(Game game) {
 		super();
@@ -61,12 +60,12 @@ public class Server {
 		System.out.println("Server : awaiting client connections");
 		connection = new Connection();
 		connection.start();
-		
+
 	}
 
 	public void stopConnection() {
 		if (connection != null)
-		connection.end();
+			connection.end();
 	}
 
 	/**************************************************************************/
@@ -75,16 +74,16 @@ public class Server {
 		for (int i = 0; i < clients.size(); i++) {
 			ClientCom client = clients.get(i);
 			client.start();
-		}	
+		}
 	}
-	
+
 	public void stopCommunication() {
 		for (int i = 0; i < clients.size(); i++) {
 			ClientCom client = clients.get(i);
 			client.end();
 		}
 	}
-	
+
 	/**************************************************************************/
 	public void startGame(int nb) {
 		for (int i = 0; i < clients.size(); i++) {
@@ -93,13 +92,14 @@ public class Server {
 		}
 		System.out.println("Server : starting game");
 	}
-	
+
 	public void endGame(int iD, boolean winner) {
 		ClientCom client = clients.get(iD);
 		client.endGame(winner);
-		System.out.println("Server : player " + Player.names[iD] + (winner ? " won !" : " lost !"));
+		System.out.println("Server : player " + Player.names[iD]
+				+ (winner ? " won !" : " lost !"));
 	}
-	
+
 	public void disconnectClient(int iD) {
 		for (int i = 0; i < clients.size(); i++) {
 			ClientCom client = clients.get(i);
@@ -107,40 +107,44 @@ public class Server {
 		}
 		System.out.println("Server : removing client iD = " + iD);
 	}
-	
+
 	public void updateClient(int iD, int stones, int actions) {
 		ClientCom client = clients.get(iD);
 		client.update(stones, actions);
 	}
-	
+
 	public void bonusClient(int iD, int bonus) {
 		ClientCom client = clients.get(iD);
 		client.obtainBonus(bonus);
 	}
-	
+
 	/**************************************************************************/
 	private class Connection extends Thread {
 
 		// Connection wizard is running
 		private boolean running = false;
-		
+
 		/**************************************************************************/
 		public void start() {
 			running = true;
 			super.start();
 		}
-		
+
 		public void end() {
-			if (!running) return;
+			if (!running)
+				return;
 			running = false;
-			try {this.join();} catch (Exception ex) {}
+			try {
+				this.join();
+			} catch (Exception ex) {
+			}
 		}
-		
+
 		/**************************************************************************/
 		public void run() {
 			ServerSocket serverSocket;
+			// Open the server listener socket
 			try {
-				// Open the server listener socket
 				serverSocket = new ServerSocket(SERVER_PORT);
 				serverSocket.setSoTimeout(SERVER_TIMEOUT);
 				System.out.println("Server : listening on port = " + SERVER_PORT);
@@ -151,70 +155,95 @@ public class Server {
 				return;
 			}
 			// Listen to client connections
-			while (running && clients.size() < MAX_CLIENTS) {
+			while (running) {
+				// Wait for new clients
 				try {
-					// Create the client socket
 					Socket socket = serverSocket.accept();
 					socket.setSoTimeout(SERVER_TIMEOUT);
-					// Store the client
-					int iD = clients.size();
-					clients.add(new ClientCom(iD, socket));
-					game.connect(iD);
-					System.out.println("Server : adding client iD = " + iD);
+					if (clients.size() < MAX_CLIENTS) {
+						// Store the new client
+						int iD = clients.size();
+						clients.add(new ClientCom(iD, socket));
+						game.connect(iD);
+						System.out.println("Server : adding client iD = " + iD);
+					}else{
+						// Refuse the client
+						System.out.println("Server : refusing client, server full !");
+						socket.close();
+					}
 				} catch (SocketTimeoutException to) {
 				} catch (Exception ex) {
-					System.out.println("Server : unable to register client "
-							+ ex.getLocalizedMessage());
+					System.out.println("Server : connection problem " + ex.getLocalizedMessage());
+				}
+				// Check clients connection state
+				for (int iD = 0; iD < clients.size(); iD++) {
+					ClientCom client = clients.get(iD);
+					// Ask for presence
+					if (!client.sensing()) {
+						clients.remove(iD);
+						game.disconnect(iD);
+						System.out.println("Server : removing client iD = "
+								+ iD);
+						iD--;
+					}
 				}
 			}
-			// Stop the listening
-			running = false;
+			// Close the server socket
+			try {serverSocket.close();} catch(IOException ex) {}
 		}
 	}
-	
+
 	/**************************************************************************/
 	private class ClientCom extends Thread {
-		
+
 		// Client attributes
 		private int iD;
 		private Socket socket = null;
 		private boolean running = false;
-		
+
 		/**************************************************************************/
 		public ClientCom(int iD, Socket client) {
 			this.iD = iD;
 			this.socket = client;
 		}
-		
+
 		/**************************************************************************/
 		public void start() {
 			running = true;
 			super.start();
 		}
-		
+
 		public void end() {
-			if (!running) return;
+			if (!running)
+				return;
 			running = false;
-			try {this.join();} catch (Exception ex) {}
+			try {
+				this.join();
+			} catch (Exception ex) {
+			}
 		}
 
 		/**************************************************************************/
 		private int readNoWait(InputStream istream) throws IOException {
 			while (running) {
-				if (istream.available() > 0) {
-					int data = istream.read(); 
-					if (data < 0) throw new IOException();
-					return data;
+				int data;
+				try {
+					data = istream.read();
+				} catch (SocketTimeoutException ex) {
+					continue;
 				}
-			} throw new IOException();
+				if (data < 0)
+					throw new IOException();
+				return data;
+			}
+			throw new IOException();
 		}
-		
+
 		/**************************************************************************/
 		public void run() {
-			InputStream istream;
 			try {
 				// Open the input stream
-				istream = socket.getInputStream();
+				InputStream istream = socket.getInputStream();
 				while (running) {
 					int bonus, to, from;
 					// Get message packet
@@ -223,35 +252,40 @@ public class Server {
 					switch (cmd) {
 					case STEAL_STONE:
 						to = readNoWait(istream);
-						if (to >= clients.size()) break;
+						if (to >= clients.size())
+							break;
 						game.stealStone(iD, to);
 						break;
 					case GIVE_STONE:
 						to = readNoWait(istream);
-						if (to >= clients.size()) break;
+						if (to >= clients.size())
+							break;
 						game.giveStone(iD, to);
 						break;
 					case USE_BONUS:
 						bonus = readNoWait(istream);
 						from = readNoWait(istream);
 						to = readNoWait(istream);
-						if (to > clients.size() || from > clients.size()) break;
+						if (to > clients.size() || from > clients.size())
+							break;
 						game.useBonus(iD, bonus, from, to);
 						break;
 					}
 				}
-			} catch (IOException io) {running = false;}
+			} catch (IOException io) {
+				running = false;
+			}
 			// Signal client disconnection
-			game.disconnect(iD);
+			try {socket.close();} catch (IOException ex){};
+			disconnectClient(iD);
 		}
-		
+
 		/**************************************************************************/
 		public void startGame(int nb) {
-			if (!running) return;
-			OutputStream ostream;
+			if (!running)
+				return;
 			try {
-				// Create the output stream
-				ostream = socket.getOutputStream();
+				OutputStream ostream = socket.getOutputStream();
 				// Prepare the message
 				byte message[] = new byte[3];
 				message[0] = START_GAME;
@@ -263,13 +297,12 @@ public class Server {
 				end();
 			}
 		}
-		
+
 		public void endGame(boolean winner) {
-			if (!running) return;
-			OutputStream ostream;
+			if (!running)
+				return;
 			try {
-				// Create the output stream
-				ostream = socket.getOutputStream();
+				OutputStream ostream = socket.getOutputStream();
 				// Prepare the message
 				byte message[] = new byte[2];
 				message[0] = END_GAME;
@@ -280,14 +313,12 @@ public class Server {
 				end();
 			}
 		}
-		
-		/**************************************************************************/
+
 		public void obtainBonus(int bonus) {
-			if (!running) return;
-			OutputStream ostream;
+			if (!running)
+				return;
 			try {
-				// Create the output stream
-				ostream = socket.getOutputStream();
+				OutputStream ostream = socket.getOutputStream();
 				// Prepare the message
 				byte message[] = new byte[2];
 				message[0] = OBTAIN_BONUS;
@@ -298,13 +329,12 @@ public class Server {
 				end();
 			}
 		}
-		
+
 		public void update(int stones, int actions) {
-			if (!running) return;
-			OutputStream ostream;
+			if (!running)
+				return;
 			try {
-				// Create the output stream
-				ostream = socket.getOutputStream();
+				OutputStream ostream = socket.getOutputStream();
 				// Prepare the message
 				byte message[] = new byte[4];
 				message[0] = STONE_QUANTITY;
@@ -317,13 +347,24 @@ public class Server {
 				end();
 			}
 		}
-		
+
+		/**************************************************************************/
+		public boolean sensing() {
+			try {
+				OutputStream ostream = socket.getOutputStream();
+				ostream.write(SENSING);
+			} catch (IOException io) {
+				return false;
+			}
+			return true;
+		}
+
 		public void disconnect(int iD) {
-			if (!running) return;
-			OutputStream ostream;
+			if (!running)
+				return;
 			try {
 				// Create the output stream
-				ostream = socket.getOutputStream();
+				OutputStream ostream = socket.getOutputStream();
 				// Prepare the message
 				byte message[] = new byte[2];
 				message[0] = DISCONNECT;
