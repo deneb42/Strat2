@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 import com.badlogic.gdx.Gdx;
 
@@ -81,7 +82,7 @@ public class Communication {
 		byte[] msg = new byte[2];
 		msg[0] = STEAL_STONE;
 		msg[1] = (byte) who;
-		
+
 		// Send message
 		try {
 			ostream.write(msg);
@@ -96,7 +97,7 @@ public class Communication {
 		byte[] msg = new byte[2];
 		msg[0] = GIVE_STONE;
 		msg[1] = (byte) who;
-		
+
 		// Send message
 		try {
 			ostream.write(msg);
@@ -113,7 +114,7 @@ public class Communication {
 		msg[1] = (byte) bonus;
 		msg[2] = (byte) from;
 		msg[3] = (byte) to;
-		
+
 		// Send message
 		try {
 			ostream.write(msg);
@@ -173,6 +174,7 @@ public class Communication {
 	/**************************************************************************/
 	private class StreamAnalyzer extends Thread {
 		private boolean running;
+		private InputStream istream;
 
 		public void start() {
 			running = true;
@@ -189,14 +191,29 @@ public class Communication {
 			}
 		}
 
+		private int read() throws IOException {
+			while (running) {
+				try {
+					int r = istream.read();
+					if (r != -1)
+						return r;
+					else
+						throw new IOException("End of stream");
+				} catch (SocketTimeoutException ex) {
+				}
+			}
+			return -1;
+		}
+
 		public void run() {
 			// Open the input stream
-			InputStream istream;
+
 			try {
+				socket.setSoTimeout(100);
 				istream = socket.getInputStream();
 				while (running) {
 					// Get the message
-					int cmd = istream.read();
+					int cmd = read();
 					if (cmd < 0)
 						break;
 
@@ -204,45 +221,45 @@ public class Communication {
 					int tmp;
 					switch (cmd) {
 					case START_GAME:
-						iD = istream.read();
-						totalId = istream.read();
+						iD = read();
+						totalId = read();
 						status = STATUS_IN_PROGRESS;
 						for (int i = 0; i < totalId; i++)
 							alives[i] = true;
 						log("Communication", "Start game : " + iD + "/"
 								+ totalId);
 						break;
-					
+
 					case STONE_QUANTITY:
-						stones = istream.read();
+						stones = read();
 						log("Communication", "Stones update : " + stones);
 						break;
-					
+
 					case ACTION_GAUGE:
-						actions = istream.read();
+						actions = read();
 						log("Communication", "Action power update : " + actions);
 						break;
-					
+
 					case OBTAIN_BONUS:
-						bonus = istream.read();
+						bonus = read();
 						log("Communication", "Try to catch bonus : " + bonus);
 						break;
-					
+
 					case DISCONNECT:
-						tmp = istream.read();
+						tmp = read();
 						if (tmp >= 0 && tmp < alives.length)
 							alives[tmp] = false;
 						log("Communication", "Player " + tmp + " is gone away");
 						break;
-					
+
 					case END_GAME:
 						// Win or lose
-						tmp = istream.read();
+						tmp = read();
 						if (tmp == 1)
 							status = STATUS_WIN;
 						else if (tmp == 0)
 							status = STATUS_LOST;
-						
+
 						// Reinitialize variables for new game
 						for (int i = 0; i < MAX_CLIENTS; i++)
 							alives[i] = false;
@@ -252,7 +269,8 @@ public class Communication {
 					}
 				}
 			} catch (IOException io) {
-				Gdx.app.error("Communication", "StreamAnalyzer : " + io.getMessage());
+				Gdx.app.error("Communication",
+						"StreamAnalyzer : " + io.getMessage());
 				running = false;
 				status = STATUS_DECO;
 				iD = -1;

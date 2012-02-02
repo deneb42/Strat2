@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class ScreenBg implements Screen {
 	protected GameStrat game;
 	private Sprite bg;
+	private static boolean viewedDisconnect = false;
 
 	public ScreenBg(GameStrat g, String bgimg) {
 		game = g;
@@ -18,6 +19,11 @@ public class ScreenBg implements Screen {
 	public void render(float delta) {
 		// Clear screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+		if (game.com.getStatus() == Communication.STATUS_DECO && !viewedDisconnect) {
+			viewedDisconnect = true;
+			game.setScreen(new ScreenDeco(game));
+		}
 
 		// Draw background
 		game.batch.begin();
