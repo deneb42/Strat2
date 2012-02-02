@@ -94,10 +94,6 @@ public class GameScreen extends JFrame {
 		// Open the window
 		setContentPane(new JPanel());
 		setVisible(true);
-		
-		// Allocate the double buffer 
-		buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-		graphic = buffer.getGraphics();
 	}
 	
 	// Window painting routine
@@ -107,7 +103,10 @@ public class GameScreen extends JFrame {
 		int centerY = getHeight() / 2;
 		
 		// Check for double buffer
-		if (buffer == null) return;
+		if (buffer == null) {
+			buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+			graphic = buffer.getGraphics();
+		}
 		
 		// Draw the background
 		graphic.drawImage(background, 0, 0, getWidth(), getHeight(), 0, 0, background.getWidth(), background.getHeight(), null);
