@@ -77,9 +77,12 @@ public class Communication {
 	}
 
 	public void stealStone(int who) {
+		// Compose message
 		byte[] msg = new byte[2];
 		msg[0] = STEAL_STONE;
 		msg[1] = (byte) who;
+		
+		// Send message
 		try {
 			ostream.write(msg);
 		} catch (IOException e) {
@@ -89,9 +92,12 @@ public class Communication {
 	}
 
 	public void giveStone(int who) {
+		// Compose message
 		byte[] msg = new byte[2];
 		msg[0] = GIVE_STONE;
 		msg[1] = (byte) who;
+		
+		// Send message
 		try {
 			ostream.write(msg);
 		} catch (IOException e) {
@@ -101,11 +107,14 @@ public class Communication {
 	}
 
 	public void useBonus(int bonus, int from, int to) {
+		// Compose message
 		byte[] msg = new byte[4];
 		msg[0] = USE_BONUS;
 		msg[1] = (byte) bonus;
 		msg[2] = (byte) from;
 		msg[3] = (byte) to;
+		
+		// Send message
 		try {
 			ostream.write(msg);
 		} catch (IOException e) {
@@ -203,31 +212,38 @@ public class Communication {
 						log("Communication", "Start game : " + iD + "/"
 								+ totalId);
 						break;
+					
 					case STONE_QUANTITY:
 						stones = istream.read();
 						log("Communication", "Stones update : " + stones);
 						break;
+					
 					case ACTION_GAUGE:
 						actions = istream.read();
 						log("Communication", "Action power update : " + actions);
 						break;
+					
 					case OBTAIN_BONUS:
 						bonus = istream.read();
 						log("Communication", "Try to catch bonus : " + bonus);
 						break;
+					
 					case DISCONNECT:
 						tmp = istream.read();
 						if (tmp >= 0 && tmp < alives.length)
 							alives[tmp] = false;
 						log("Communication", "Player " + tmp + " is gone away");
 						break;
+					
 					case END_GAME:
+						// Win or lose
 						tmp = istream.read();
 						if (tmp == 1)
 							status = STATUS_WIN;
 						else if (tmp == 0)
 							status = STATUS_LOST;
-						iD = -1;
+						
+						// Reinitialize variables for new game
 						for (int i = 0; i < MAX_CLIENTS; i++)
 							alives[i] = false;
 						iD = -1;
@@ -236,8 +252,7 @@ public class Communication {
 					}
 				}
 			} catch (IOException io) {
-				Gdx.app.error("Communication",
-						"StreamAnalyzer : " + io.getMessage());
+				Gdx.app.error("Communication", "StreamAnalyzer : " + io.getMessage());
 				running = false;
 				status = STATUS_DECO;
 				iD = -1;
