@@ -73,7 +73,8 @@ public class Client extends Thread {
 	}
 
 	public void endGame(boolean looser) {
-		// Stop from listening
+		// Stop the listening
+		if (!running) return;
 		running = false;
 		try {
 			this.join();
