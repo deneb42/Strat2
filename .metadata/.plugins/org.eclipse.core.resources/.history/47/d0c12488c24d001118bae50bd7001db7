@@ -1,0 +1,220 @@
+/*
+ * Strat-game PC-Server :
+ * 
+ * Code : Fr�d�ric Meslin, Florent Touchard, Benjamin Blois
+ * Released on 29/01/12 at 15h00 for the 4th GGJ
+ * 
+ * This program and all its resources included is
+ * published under the Creative common license By-NC 3.0.
+ * 
+ * For more informations :
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ */
+
+package globalgamejam.org.strat;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+
+public class Client extends Thread {
+
+	// Global client -> server protocol
+	private static final int STEAL_STONE = 0;
+	private static final int GIVE_STONE = 1;
+	private static final int USE_BONUS = 2;
+
+	// Global server -> client protocol
+	private static final int START_GAME = 0;
+	private static final int STONE_QUANTITY = 1;
+	private static final int ACTION_GAUGE = 2;
+	private static final int OBTAIN_BONUS = 3;
+	private static final int DISCONNECT = 4;
+	private static final int END_GAME = 5;
+	private static final int SENSING = 6;
+
+	// Internal objects
+	private Game game = null;
+	private Server server = null;
+	private Socket socket = null;
+
+	// Client attributes
+	private int iD = -1;
+	private boolean running = false;
+
+	/**************************************************************************/
+	public Client(int iD, Socket client) {
+		this.iD = iD;
+		this.socket = client;
+	}
+
+	/**************************************************************************/
+	public void startGame(Game game, int nb) {
+		// Prepare the client for listening
+		this.game = game;
+		this.running = true;
+		super.start();
+
+		// Send the start message
+		try {
+			OutputStream ostream = socket.getOutputStream();
+			// Prepare the message
+			byte message[] = new byte[3];
+			message[0] = START_GAME;
+			message[1] = (byte) iD;
+			message[2] = (byte) nb;
+			// Send the message
+			ostream.write(message);
+		} catch (IOException io) {
+			this.running = false;
+			server.disconnectClient(iD);
+		}
+	}
+
+	public void endGame(boolean looser) {
+		// Stop from listening
+		running = false;
+		try {
+			this.join();
+		} catch (InterruptedException ex) {
+		}
+		this.game = null;
+
+		// Send the end message
+		try {
+			OutputStream ostream = socket.getOutputStream();
+			// Prepare the message
+			byte message[] = new byte[2];
+			message[0] = END_GAME;
+			message[1] = (byte) (looser ? 0 : 1);
+			// Send the message
+			ostream.write(message);
+		} catch (IOException io) {
+			server.disconnectClient(iD);
+		}
+	}
+
+	/**************************************************************************/
+	public void run() {
+		try {
+			// Open the input stream
+			InputStream istream = socket.getInputStream();
+			while (running) {
+				int bonus, to, from;
+				// Get message packet
+				int cmd = readNoWait(istream);
+				// Interpret the message
+				switch (cmd) {
+				case STEAL_STONE:
+					to = readNoWait(istream);
+					game.stealStone(iD, to);
+					break;
+				case GIVE_STONE:
+					to = readNoWait(istream);
+					game.giveStone(iD, to);
+					break;
+				case USE_BONUS:
+					bonus = readNoWait(istream);
+					from = readNoWait(istream);
+					to = readNoWait(istream);
+					game.useBonus(iD, bonus, from, to);
+					break;
+				}
+			}
+		} catch (IOException io) {
+			running = false;
+			server.disconnectClient(iD);
+		}
+	}
+
+	/**************************************************************************/
+	private int readNoWait(InputStream istream) throws IOException {
+		while (running) {
+			int data;
+			try {
+				data = istream.read();
+			} catch (SocketTimeoutException ex) {
+				continue;
+			}
+			if (data < 0)
+				throw new IOException();
+			return data;
+		}
+		throw new IOException();
+	}
+
+	public void obtainBonus(int bonus) {
+		if (!running)
+			return;
+		try {
+			OutputStream ostream = socket.getOutputStream();
+			// Prepare the message
+			byte message[] = new byte[2];
+			message[0] = OBTAIN_BONUS;
+			message[1] = (byte) bonus;
+			// Send the message
+			ostream.write(message);
+		} catch (IOException io) {
+			this.running = false;
+			server.disconnectClient(iD);
+		}
+	}
+
+	public void update(int stones, int actions) {
+		if (!running)
+			return;
+		try {
+			OutputStream ostream = socket.getOutputStream();
+			// Prepare the message
+			byte message[] = new byte[4];
+			message[0] = STONE_QUANTITY;
+			message[1] = (byte) stones;
+			message[2] = ACTION_GAUGE;
+			message[3] = (byte) actions;
+			// Send the message
+			ostream.write(message);
+		} catch (IOException io) {
+			this.running = false;
+			server.disconnectClient(iD);
+		}
+	}
+
+	public void disconnect(int iD) {
+		if (!running)
+			return;
+		try {
+			// Create the output stream
+			OutputStream ostream = socket.getOutputStream();
+			// Prepare the message
+			byte message[] = new byte[2];
+			message[0] = DISCONNECT;
+			message[1] = (byte) iD;
+			// Send the message
+			ostream.write(message);
+		} catch (IOException io) {
+			this.running = false;
+			server.disconnectClient(iD);
+		}
+	}
+
+	/**************************************************************************/
+	public boolean sensing() {
+		try {
+			if (socket == null) return false;
+			OutputStream ostream = socket.getOutputStream();
+			ostream.write(SENSING);
+		} catch (IOException io) {
+			return false;
+		}
+		return true;
+	}
+	
+	public void close() {
+		try {			
+			socket.close();
+			socket = null;
+		}catch (IOException io) {}
+	}
+}

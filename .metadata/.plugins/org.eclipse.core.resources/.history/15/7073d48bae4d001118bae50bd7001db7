@@ -1,0 +1,95 @@
+/*
+ * Strat-game PC-Server :
+ * 
+ * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
+ * Released on 29/01/12 at 15h00 for the 4th GGJ
+ * 
+ * This program and all its resources included is
+ * published under the Creative common license By-NC 3.0.
+ * 
+ * For more informations :
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ */
+
+package globalgamejam.org.strat;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Server {
+
+	// Global server constants
+	public static final int SERVER_PORT = 50000;
+	public static final int MAX_CLIENTS = 6;
+	public static final int SERVER_TIMEOUT = 100;
+
+	// Internal objects
+	private Game game = null;
+	private List<Client> clients = null;
+
+	// Server constructor
+	public Server(Game game, List<Client> clients) {
+		super();
+		this.game = game;
+		this.clients = clients;
+	}
+
+	/**************************************************************************/
+	public void startSaloon() {
+		System.out.println("Server : starting saloon ...");
+		connection = new Saloon();
+		connection.start();
+	}
+
+	public void stopSaloon() {
+		if (connection != null)
+			connection.end();
+		connection = null;
+		System.out.println("Server : ... ending saloon ");
+	}
+
+	/**************************************************************************/
+	public void startGame(int nb) {
+		System.out.println("Server : starting game ...");
+		for (int i = 0; i < clients.size(); i++) {
+			Client client = clients.get(i);
+			client.start();
+		}
+	}
+
+	public void stopGame(int looserId) {
+		for (int i = 0; i < clients.size(); i++) {
+			Client client = clients.get(i);
+			client.end(i == looserId);
+		}
+		System.out.println("Server : ... ending game");
+	}
+
+	System.out.println("Server : player " + Player.names[iD]
+			+ (winner ? " won !" : " lost !"));
+
+	public void disconnectClient(int iD) {
+		for (int i = 0; i < clients.size(); i++) {
+			Client client = clients.get(i);
+			client.disconnect(iD);
+		}
+		System.out.println("Server : removing client iD = " + iD);
+	}
+
+	/**************************************************************************/
+	public void updateClient(int iD, int stones, int actions) {
+		Client client = clients.get(iD);
+		client.update(stones, actions);
+	}
+
+	public void bonusClient(int iD, int bonus) {
+		Client client = clients.get(iD);
+		client.obtainBonus(bonus);
+	}
+
+}
+

@@ -1,0 +1,177 @@
+/*
+ * Strat-game PC-Server :
+ * 
+ * Code : Fr�d�ric Meslin, Florent Touchard, Benjamin Blois
+ * Released on 29/01/12 at 15h00 for the 4th GGJ
+ * 
+ * This program and all its resources included is
+ * published under the Creative common license By-NC 3.0.
+ * 
+ * For more informations :
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ */
+
+package globalgamejam.org.strat;
+
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
+import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+
+public class OlympeScreen implements ActionListener {
+
+	// Window layout constants
+	private static final int RESO_X = 320;
+	private static final int RESO_Y = 240;
+	private static final long serialVersionUID = 1L;
+
+	// Internal objects
+	private Olympe olympe = null;
+	
+	// Internal dialogs
+	private JDialog dialog;
+	private BackFrame background;
+	
+	// Internal graphical objects
+	private JPanel panel;
+	private JPanel back;
+	private JButton startButton;
+	private JButton exitButton;
+	private JList<String> clientList;
+	private DefaultListModel<String> clientListModel;
+
+	/*************************************************************************/
+	public OlympeScreen(Olympe olympe) {
+		super();
+		this.olympe = olympe;
+
+		// Create the background frame
+		background = new BackFrame();
+		background.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		background.setUndecorated(true);
+		background.setResizable(false);
+		background.setTitle("Olympe");
+		
+		// Create the connection dialog
+		dialog = new JDialog();
+		dialog.setAlwaysOnTop(true);
+		dialog.setTitle("Olympe : clients connection ");
+		dialog.setSize(RESO_X, RESO_Y);
+		dialog.setLocationRelativeTo(null);
+		
+		//GraphicsDevice myDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        //myDevice.setFullScreenWindow(this);
+        
+		// Create the visual panels
+		panel = new JPanel(new GridLayout(4, 1));
+		dialog.setContentPane(panel);
+		
+		back = new JPanel();
+		background.setContentPane(back);
+
+		// Print the local IP
+		panel.add(new JLabel("Auto-detected IP : " + getLocalIP()));
+
+		// Add the client list
+		clientListModel = new DefaultListModel<String>();
+		clientList = new JList<String>(clientListModel);
+		clientList.setMinimumSize(new Dimension(300, 200));
+		panel.add(clientList);
+
+		// Add the interface buttons
+		startButton = new JButton("Start");
+		startButton.setActionCommand("Start");
+		startButton.addActionListener(this);
+		panel.add(startButton);
+
+		exitButton = new JButton("Exit");
+		exitButton.setActionCommand("Exit");
+		exitButton.addActionListener(this);
+		panel.add(exitButton);
+		
+		// Show the GUI
+		background.setVisible(true);
+		dialog.setVisible(true);
+	}
+
+	/*************************************************************************/
+	public void actionPerformed(ActionEvent e) {
+		String Action;
+		Action = e.getActionCommand();
+		if (Action.equals("Exit"))
+			olympe.end();
+		else if (Action.equals("Start"))
+			olympe.end();
+	}
+
+	private String getLocalIP() {
+		Enumeration<NetworkInterface> e;
+		// Get the local IP
+		try {
+			e = NetworkInterface.getNetworkInterfaces();
+			while (e.hasMoreElements()) {
+				Enumeration<InetAddress> i = e.nextElement().getInetAddresses();
+				while (i.hasMoreElements()) {
+					InetAddress a = i.nextElement();
+					if (a.isSiteLocalAddress() && (a instanceof Inet4Address)
+							&& !a.isLoopbackAddress())
+						return (a.getHostAddress());
+				}
+			}
+		} catch (SocketException e1) {
+			e1.printStackTrace();
+		}
+		return null;
+	}
+
+	/*************************************************************************/
+	public void addClient(String name) {
+		clientListModel.add(clientListModel.size(), name);
+	}
+
+	public void removeClient(int iD) {
+		clientListModel.removeElementAt(iD);
+	}
+	
+	/*************************************************************************/
+	private class BackFrame extends JFrame {
+		
+		// Credit image to be displayed
+		private static final String creditPng = "credits.png";
+		private BufferedImage credit;
+		
+		/*************************************************************************/	
+		public BackFrame() {
+			super();
+			try {
+				credit = ImageIO.read(new File(creditPng));
+			} catch (IOException io) {
+				System.out.println("OlympeScreen : unable to load credit screen "
+						+ io.getLocalizedMessage());
+			}
+		}
+		
+		public void paint(Graphics g){
+			g.drawImage(credit, 0, 0, getWidth(), getHeight(), 0, 0, 1279, 1023, null); 
+		}
+		
+	}		
+}

@@ -14,49 +14,91 @@
 package globalgamejam.org.strat;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Player {
-	
-	// Player constants
-	public static final int START_STONES = 10;
-	public static final int START_ACTIONS = 4;
-	public static final int MAX_STONES = 10;
-	public static final int MAX_ACTIONS = 10;
-	
-	// Player names and color 
-	public static final String[] names = {"Demeter", "Zeus", "Artemis", "Helios", "Ares", "Athena"};
-	public static final Color[] colors = {Color.green, Color.blue, Color.orange, Color.yellow, Color.red, Color.blue};    
-	
-	// Internal objects
-	private int stones;
-	private int actions;
 
-	public Player() {
-		this.stones = START_STONES;
+	// Player constants
+	public static final int START_ACTIONS = 4;
+	public static final int MAX_ACTIONS = 10;
+
+	// Player names and color
+	public static final String[] names = { "Demeter", "Zeus", "Artemis",
+			"Helios", "Ares", "Athena" };
+	public static final Color[] colors = { Color.green, Color.blue,
+			Color.orange, Color.yellow, Color.red, Color.blue };
+
+	// Image resources
+	public static final int NB_AVATARS = 6;
+	private static final String[] avatarsPng = { "avatars/demeter.png",
+			"avatars/zeus.png", "avatars/artemis.png", "avatars/helios.png",
+			"avatars/ares.png", "avatars/athena.png" };
+
+	// Bitmaps objects
+	private static BufferedImage avatar;
+
+	// Players attributes
+	private int iD = 0;
+	private int actions = 0;
+	private GreekColumn column = null;
+
+	/**************************************************************************/
+	public Player(int iD, GreekColumn column) {
+
+		this.iD = iD;
 		this.actions = START_ACTIONS;
+		this.column = column;
+		
+		// Load the images
+		try {
+			avatar = ImageIO.read(new File(avatarsPng[iD]));
+		} catch (IOException io) {
+			System.out.println("Player : unable to load some graphics "
+					+ io.getLocalizedMessage());
+		}
+		
+		// Attach to the column
+		column.setAvatar(avatar);
 	}
-	
-	public void addStones(int stones) {
-		this.stones += stones;
-		if (this.stones < 0) this.stones = 0;
-		else if (this.stones > MAX_STONES) this.stones = MAX_STONES;
-	}
-	
+
+	/**************************************************************************/
 	public void addActions(int actions) {
 		this.actions += actions;
-		if (this.actions < 0) this.actions = 0;
-		else if (this.actions > MAX_ACTIONS) this.actions = MAX_ACTIONS;
+		if (this.actions < 0)
+			this.actions = 0;
+		else if (this.actions > MAX_ACTIONS)
+			this.actions = MAX_ACTIONS;
+	}
+
+	public void setActions(int actions) {
+		actions = actions;
 	}
 	
-	public void setActions(int action) {
-		
+	public int getActions() {
+		return actions;
+	}
+
+	public boolean isActionsEmpty() {
+		return actions <= 0;
+	}
+
+	public boolean isActionsFull() {
+		return actions == MAX_ACTIONS;
+	}
+
+	/**************************************************************************/
+	public void setColumn(GreekColumn column) {
+		this.column = column;
+		column.setAvatar(avatar);
+	}
+
+	public GreekColumn getColumn() {
+		return column;
 	}
 	
-	public int getStones() { return stones; }
-	public boolean isStonesEmpty() { return stones <= 0; }
-	public boolean isStonesFull() { return stones == MAX_STONES; }
-	
-	public int getActions() { return actions; }
-	public boolean isActionsEmpty() { return actions <= 0; }
-	public boolean isActionsFull() { return actions == MAX_ACTIONS; }
 }

@@ -1,0 +1,413 @@
+/*
+ * Strat-game PC-Server :
+ * 
+ * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
+ * Released on 29/01/12 at 15h00 for the 4th GGJ
+ * 
+ * This program and all its resources included is
+ * published under the Creative common license By-NC 3.0.
+ * 
+ * For more informations :
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ */
+
+package globalgamejam.org.strat;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Game {
+
+	// Internal objects
+	private List<Player> players = null;
+	private List<Client> clients = null;
+	private Sounds sound = null;
+	
+	// Interface objects
+	private ReentrantLock mutex = null;
+
+	// Clock system
+	private boolean partying = false;
+	
+	// Game global constants
+	private static final int WAIT_TIME = 100;
+	private static final int UPDATE_TIME = 100;
+
+	private static final int STONEDEC_PERIOD = 20000 / UPDATE_TIME;
+	private static final int ACTIONINC_PERIOD = 2000 / UPDATE_TIME;
+	private static final int BONUS_PERIOD = 10000 / UPDATE_TIME;
+	private static final int NORMAL_CHANCE = 50;
+	private static final int SPECIAL_CHANCE = 20;
+	private static final int NB_BONUS = 5;
+
+	// Game bonus
+	private static final int EMPTYACTION_BONUS = 0;
+	private static final int MINUSONE_BONUS = 1;
+	private static final int FILLACTION_BONUS = 2;
+	private static final int PLUSONE_BONUS = 3;
+	private static final int SWITCH_BONUS = 4;
+
+	private static final int EMPTYACTION_COST = 4;
+	private static final int MINUSONE_COST = 2;
+	private static final int FILLACTION_COST = 2;
+	private static final int PLUSONE_COST = 1;	
+	private static final int SWITCH_COST = 8;
+
+	// Game method
+	public Game() {
+		sound = new Sounds();
+		mutex = new ReentrantLock();
+		clients = new ArrayList<Client>();
+	}
+
+	/**************************************************************************/
+	public void run() {
+		while (connectionStep()) {
+			gameStep();
+		}
+		System.out.println("Game : end game ");
+	}
+
+	/**************************************************************************/
+	private boolean connectionStep() {
+		// Open the connection window
+		System.out.println("Game : starting olympe ... ");
+		sound.startMenu();
+		Olympe olympe = new Olympe(clients);
+		olympe.start();
+
+		// Wait for olympe to close
+		while (olympe.isRunning()) {
+			try {
+				wait(WAIT_TIME);
+			} catch (Exception ex) {
+			}
+		}
+
+		// Check for closing
+		if (olympe.isQuitted()) {
+			olympe = null;
+			sound.stopMenu();
+			System.out.println("Game : ... olympe quitted ");
+			return false;
+		}
+		
+		// Create the list of players
+		players = new ArrayList<Player>();
+		for (int i = 0; i < clients.size(); i ++) {
+			Player player = new Player();
+			players.add(player);
+		}
+
+		// Close the connection window
+		olympe = null;
+		sound.stopMenu();
+		System.out.println("Game : ... olympe closed ");
+		return true;
+	}
+
+	private void gameStep() {
+		// Open the game window
+		System.out.println("Game : launching game ... ");
+		sound.startMix();
+		GameScreen screen = new GameScreen(this);
+		screen.setVisible(true);
+		
+		// Start the server
+		Server server = new Server(this, clients);
+		server.startGame();
+		
+		// Start the game clock
+		Timer timer = new Timer();
+		timer.schedule(new GameClock(server, screen), 0, UPDATE_TIME);
+		
+		// Game main loop
+		partying = true;
+		while (partying) {
+			try {
+				wait(WAIT_TIME);
+			} catch (Exception ex) {
+			}
+		}
+		
+		// Release the game clock
+		timer.cancel();
+		timer = null;
+		
+		// Close the server
+		for (int i = 0; i < players.size(); i ++) {
+			server.stopGame(i, players.get(i).isStonesEmpty());
+		}
+		
+		// Close the server
+		sound.stopMix();
+		
+		// Close the window
+		screen.setVisible(false);
+		screen = null;
+	}
+
+	/**************************************************************************/
+	public void stealStone(int iD, int to) {
+		// Check general conditions
+		if (iD >= players.size()) return;
+		if (to >= players.size()) return;
+		// Lock the mutex
+		mutex.lock();
+		// Get the objects
+		Player pFrom = players.get(iD);
+		Player pTo = players.get(to);
+		// Check if steal is possible
+		if (pFrom.isActionsEmpty()) {
+			mutex.unlock();
+			return;
+		}
+		// Perform the steal
+		if (!pTo.isStonesEmpty()) {
+			pFrom.addStones(1);
+			pTo.addStones(-1);
+			sound.playStonedown();
+		}
+		// Actualize the action points
+		pFrom.addActions(-1);
+		System.out.println("Game : " + Player.names[iD] + " steal stone from "
+				+ Player.names[to]);
+		// Unlock the mutex
+		mutex.unlock();
+	}
+
+	public void giveStone(int iD, int to) {
+		// Check general conditions
+		if (iD >= players.size()) return;
+		if (to >= players.size()) return;
+		// Lock the mutex
+		mutex.lock();
+		// Get the objects
+		Player pFrom = players.get(iD);
+		Player pTo = players.get(to);
+		// Check if gift is possible
+		if (pFrom.isActionsEmpty()) {
+			mutex.unlock();
+			return;
+		}
+		// Perform the gift
+		if (!pFrom.isStonesEmpty()) {
+			pTo.addStones(1);
+			pFrom.addStones(-1);
+			sound.playStonedown();
+		}
+		// Actualize the action points
+		pFrom.addActions(-1);
+		System.out.println("Game : " + Player.names[iD] + " give stone to "
+				+ Player.names[to]);
+		// Unlock the mutex
+		mutex.unlock();
+	}
+
+	public void useBonus(int iD, int bonus, int from, int to) {
+		// Check general conditions
+		if (iD >= players.size()) return;
+		if (bonus >= NB_BONUS) return;
+		if (to >= players.size()) return;
+		if (from >= players.size()) return;
+		// Lock the mutex
+		mutex.lock();
+		// Get the objects
+		Player pUser = players.get(iD);
+		Player pFrom = players.get(from);
+		Player pTo = players.get(to);
+		// Switch depending on the bonus
+		switch (bonus) {
+		case PLUSONE_BONUS:
+			// Check if gift is possible
+			if (pUser.getActions() < PLUSONE_COST) {
+				mutex.unlock();
+				return;
+			}
+			// Get one free stone
+			pTo.addStones(1);
+			pUser.addActions(- PLUSONE_COST);
+			sound.playNormalBonus();
+			System.out.println("Game : player " + Player.names[iD]
+					+ " use bonus : player " + Player.names[to]
+					+ " get one block");
+			break;
+		case MINUSONE_BONUS:
+			// Check if gift is possible
+			if (pUser.getActions() < MINUSONE_COST) {
+				mutex.unlock();
+				return;
+			}
+			// Suppress one stone
+			pTo.addStones(-1);
+			pUser.addActions(- MINUSONE_COST);
+			sound.playNormalBonus();
+			System.out.println("Game : player " + Player.names[iD]
+					+ " use bonus : player " + Player.names[to]
+					+ " lost one block");
+			break;
+		case FILLACTION_BONUS:
+			// Check if gift is possible
+			if (pUser.getActions() < FILLACTION_COST) {
+				mutex.unlock();
+				return;
+			}
+			// Fill the action bar
+			pTo.setActions(Player.MAX_ACTIONS);
+			pUser.addActions(- FILLACTION_COST);
+			sound.playNormalBonus();
+			System.out.println("Game : player " + Player.names[iD]
+					+ " use bonus : player " + Player.names[to]
+					+ " get full action bar");
+			break;
+		case EMPTYACTION_BONUS:
+			// Check if gift is possible
+			if (pUser.getActions() < EMPTYACTION_COST) {
+				mutex.unlock();
+				return;
+			}
+			// Empty one action bar
+			pTo.setActions(0);
+			pUser.addActions(- EMPTYACTION_COST);
+			sound.playNormalBonus();
+			System.out.println("Game : player " + Player.names[iD]
+					+ " use bonus : player " + Player.names[to]
+					+ " lost is full action bar");
+			break;
+		case SWITCH_BONUS:
+			// Check if gift is possible
+			if (pUser.getActions() < SWITCH_COST) {
+				mutex.unlock();
+				return;
+			}
+			// Exchange the stones
+			int tmp = pTo.getActions();
+			pTo.setActions(pFrom.getActions());
+			pFrom.setActions(tmp);
+			pUser.addActions(- SWITCH_COST);
+			sound.playSpecialBonus();
+			System.out.println("Game : player " + Player.names[iD]
+					+ " use bonus : player " + Player.names[from]
+					+ " exchange stones with player " + Player.names[to]);
+			break;
+		}
+		// Unlock the mutex
+		mutex.unlock();
+	}
+
+	/**************************************************************************/
+	public Player getPlayer(int iD) {
+		return players.get(iD);
+	}
+
+	public int getNbPlayers() {
+		return players.size();
+	}
+
+	/**************************************************************************/
+	public boolean getWeakness(int iD) {
+		int n1 = (iD + 1) % players.size();
+		int n2 = (iD + players.size() - 1) % players.size();
+		return (players.get(n1).getStones()	+ players.get(n2).getStones()) < (GreekColumn.NB_STONES / 2);
+	}
+
+	/**************************************************************************/
+	private class GameClock extends TimerTask {
+
+		// Game clock attributes
+		private int stonesCounter;
+		private int actionsCounter;
+		private int bonusCounter;
+		private Server server;
+		private GameScreen screen;
+
+		/**************************************************************************/
+		public GameClock(Server server, GameScreen screen) {
+			// Initialize the counters
+			stonesCounter = STONEDEC_PERIOD;
+			actionsCounter = ACTIONINC_PERIOD;
+			bonusCounter = BONUS_PERIOD;
+
+			// Store the objects
+			this.server = server;
+			this.screen = screen;
+		}
+		
+		/**************************************************************************/
+		public void run() {
+			// Update the whole game
+			gameUpdateStonesActions();
+			gameUpdateBonus();
+			if (screen instanceof GameScreen) screen.repaint();
+			// Send update to each client
+			for (int i = 0; i < players.size(); i++) {
+				Player player = players.get(i);
+				server.updateClient(i, player.getStones(), player.getActions());
+			}
+			// Check the game state
+			for (int i = 0; i < players.size(); i++) {
+				if (players.get(i).isStonesEmpty()) {
+					partying = false;
+					return;
+				}
+			}
+		}
+		
+		private void gameUpdateStonesActions() {
+			// Actualize column heights
+			if (--stonesCounter == 0) {
+				for (int i = 0; i < players.size(); i++) {
+					// Check neighbors
+					players.get(i).addStones(-1);
+					if (!getWeakness(i)) players.get(i).addStones(-1);
+					else players.get(i).addStones(-2);
+				}
+				sound.playStonedown();
+				stonesCounter = STONEDEC_PERIOD;
+			}
+			// Actualize action points
+			if (--actionsCounter == 0) {
+				for (int i = 0; i < players.size(); i++) {
+					players.get(i).addActions(1);
+				}
+				actionsCounter = ACTIONINC_PERIOD;
+			}
+		}
+		
+		private void gameUpdateBonus() {
+		// Send bonus depending on time
+			if (--bonusCounter == 0) {
+				for (int i = 0; i < players.size(); i++) {
+					double rnd = Math.random() * 100;
+					if (!getWeakness(i)) {						
+						int bonus = (int) (Math.random() * (NB_BONUS - 2) + 0.5);
+						if (rnd < NORMAL_CHANCE) {
+							server.bonusClient(i, bonus);
+							System.out.println("Game : send " + bonus + " bonus to player " + Player.names[i]);
+						}else server.bonusClient(i, -1);
+					}else {
+						if (rnd < SPECIAL_CHANCE) {
+							server.bonusClient(i, SWITCH_BONUS);
+							System.out.println("Game : send ! MEGA-SWITCH ! bonus to player " + Player.names[i]);
+						}else server.bonusClient(i, -1);
+					}
+				}
+				bonusCounter = BONUS_PERIOD;
+			}
+		}
+		
+	}
+
+	/**************************************************************************/
+	public static void main(String[] args) {
+		// Start the game
+		Game game = new Game();
+		game.run();
+		// Quit the application
+		System.exit(0);
+	}
+
+}

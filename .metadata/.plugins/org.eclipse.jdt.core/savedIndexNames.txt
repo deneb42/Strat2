@@ -1,0 +1,20 @@
+INDEX VERSION 1.126+C:\strat\git\Strat2\.metadata\.plugins\org.eclipse.jdt.core
+1115467115.index
+2699946002.index
+3065916431.index
+163172794.index
+4173023868.index
+1995173708.index
+33296883.index
+2467612693.index
+1697886153.index
+30765161.index
+2748346579.index
+3133528496.index
+305854171.index
+2292008506.index
+4155206848.index
+1498219845.index
+3558045779.index
+1965060613.index
+3974580528.index

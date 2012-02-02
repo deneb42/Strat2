@@ -1,0 +1,92 @@
+package globalgamejam.org.strat;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Saloon extends Thread {
+
+	// Internal objects
+	private List<Client> clients = null;
+	
+	// Saloon attributes
+	private boolean running = false;
+
+	/**************************************************************************/
+	public Saloon (List<Client> clients) {
+		if (clients == null)
+			clients = new ArrayList<Client>();
+	}
+	
+	/**************************************************************************/
+	public void start() {
+		running = true;
+		super.start();
+	}
+
+	public void end() {
+		if (!running)
+			return;
+		running = false;
+		try {
+			this.join();
+		} catch (Exception ex) {
+		}
+	}
+
+	/**************************************************************************/
+	public void run() {
+		ServerSocket serverSocket;
+		// Open the server listener socket
+		try {
+			serverSocket = new ServerSocket(SERVER_PORT);
+			serverSocket.setSoTimeout(SERVER_TIMEOUT);
+			System.out.println("Server : listening on port = " + SERVER_PORT);
+		} catch (IOException ex) {
+			System.out.println("Server : unable to open listener socket "
+					+ ex.getLocalizedMessage());
+			System.exit(-1);
+			return;
+		}
+		// Listen to client connections
+		while (running) {
+			// Wait for new clients
+			try {
+				Socket socket = serverSocket.accept();
+				socket.setSoTimeout(SERVER_TIMEOUT);
+				if (clients.size() < MAX_CLIENTS) {
+					// Store the new client
+					int iD = clients.size();
+					Client client = new Client(iD, socket, this);
+					clients.add();
+					game.connect(iD);
+					System.out.println("Server : adding client iD = " + iD);
+				}else{
+					// Refuse the client
+					System.out.println("Server : refusing client, server full !");
+					socket.close();
+				}
+			} catch (SocketTimeoutException to) {
+			} catch (Exception ex) {
+				System.out.println("Server : connection problem " + ex.getLocalizedMessage());
+			}
+			// Check clients connection state
+			for (int iD = 0; iD < clients.size(); iD++) {
+				ClientCom client = clients.get(iD);
+				// Ask for presence
+				if (!client.sensing()) {
+					clients.remove(iD);
+					game.disconnect(iD);
+					System.out.println("Server : removing client iD = "
+							+ iD);
+					iD--;
+				}
+			}
+		}
+		// Close the server socket
+		try {serverSocket.close();} catch(IOException ex) {}
+	}
+}

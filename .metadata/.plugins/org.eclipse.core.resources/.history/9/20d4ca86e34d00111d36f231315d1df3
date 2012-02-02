@@ -1,0 +1,145 @@
+/*
+ * Strat-game PC-Server :
+ * 
+ * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
+ * Released on 29/01/12 at 15h00 for the 4th GGJ
+ * 
+ * This program and all its resources included is
+ * published under the Creative common license By-NC 3.0.
+ * 
+ * For more informations :
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ */
+
+package globalgamejam.org.strat;
+
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+
+public class GreekColumn {
+
+	// Columns constants
+	public static final int NB_COLUMNS = 6;
+	public static final int NB_STONES = 10;
+	public static final int START_STONES = 10;
+	public static final int MAX_STONES = 10;
+
+	// Image resources
+	private static final String[] columnPng = { "nord/nord", "nordEst/nordEst",
+			"sudEst/sudEst", "sud/sud", "sudOuest/sudOuest",
+			"nordOuest/nordOuest" };
+
+	// Animation parameters
+	private static final double columnsRay = 210.0;
+	private static final int vibraFrames = 64;
+	private static final double vibraAmp = 6.0;
+
+	// Bitmaps objects
+	private BufferedImage columns[];
+	private BufferedImage avatar = null;
+
+	// Internal attributes
+	private int iD = 0;
+	private double vecX = 0;
+	private double vecY = 0;
+	private int posX = 0;
+	private int posY = 0;
+
+	private int stones = 0;
+	private int vibrate = 0;
+
+	/**************************************************************************/
+	public GreekColumn(int iD) {
+
+		this.iD = iD;
+		this.stones = START_STONES;
+
+		// Compute the column position
+		double ang = Math.PI * 0.5 + ((double) -iD) * Math.PI / 3.0;
+		vecX = Math.cos(ang);
+		vecY = -Math.sin(ang);
+		posX = (int) (vecX * columnsRay);
+		posY = (int) (vecY * columnsRay);
+
+		// Load the images
+		try {
+			columns = new BufferedImage[NB_STONES];
+			for (int i = 0; i < NB_STONES; i++) {
+				columns[i] = ImageIO.read(new File(columnPng[iD] + (i + 1)
+						+ ".png"));
+			}
+		} catch (IOException io) {
+			System.out.println("GreekColumn : unable to load some graphics "
+					+ io.getLocalizedMessage());
+		}
+	}
+
+	/**************************************************************************/
+	public void makeVibrations() {
+		this.vibrate = vibraFrames;
+	}
+
+	/**************************************************************************/
+	public void addStones(int stones) {
+		this.stones += stones;
+		if (this.stones < 0)
+			this.stones = 0;
+		else if (this.stones > MAX_STONES)
+			this.stones = MAX_STONES;
+	}
+
+	public int getStones() {
+		return stones;
+	}
+
+	public boolean isStonesEmpty() {
+		return stones <= 0;
+	}
+
+	public boolean isStonesFull() {
+		return stones == MAX_STONES;
+	}
+
+	/**************************************************************************/
+	public void setAvatar(BufferedImage avatar) {
+		this.avatar = avatar;
+	}
+
+	/**************************************************************************/
+	public void paint(JFrame frame, Graphics g) {
+		int vibrax, vibray;
+		if (stones <= 0)
+			return;
+
+		// Calculate the position
+		if (vibrate > 0) {
+			vibrax = (int) ((Math.random() - 0.5) * vibraAmp);
+			vibray = (int) ((Math.random() - 0.5) * vibraAmp);
+			vibrate--;
+		} else {
+			vibrax = 0;
+			vibray = 0;
+		}
+
+		// Draw the column
+		int x = posX + (frame.getWidth() - columns[stones - 1].getWidth()) / 2
+				+ vibrax;
+		int y = posY + (frame.getHeight() - columns[stones - 1].getHeight())
+				/ 2 + vibray;
+		g.drawImage(columns[stones - 1], x, y, null);
+
+		// Draw the avatar
+		if (avatar != null) {
+			double ray = ((stones + 4.0) / 14.0) * 350.0;
+			x = (frame.getWidth() - avatar.getWidth()) / 2 + (int) (ray * vecX);
+			y = (frame.getHeight() - avatar.getHeight()) / 2 + (int) (ray * vecY);
+			g.drawImage(avatar, x, y, null);
+		}
+	}
+
+}

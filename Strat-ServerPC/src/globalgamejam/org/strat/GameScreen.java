@@ -31,55 +31,41 @@ import java.text.AttributedCharacterIterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class GameScreen extends JDialog {
-
-	// Window layout constants
-	private static final int RESO_X = 1280;
-	private static final int RESO_Y = 1024;
+public class GameScreen extends JFrame {
 
 	// Resource images
-	private static final int FLAMMES_NB = 12;
-	private int flammeIndex = 0; 
+	private static final int FLAMES_NB = 12;
+	private int flameIndex = 0; 
 	
-	private static final String flammePng = "plate/flamme";
+	private static final String flamePng = "plate/flamme";
 	private static final String platePng = "plate/plate.png";
-	private static final String creditsPng = "credits.png";
-	
-	private static final int plateX = 340;
-	private static final int plateY = 212;
-	private static final int flammeX = 502;
-	private static final int flammeY = 374;	
+	private static final String backgroundPng = "plate/background.png";	
 	
 	// Internal objects
 	private Game game;
-	private JPanel panel;
-	private GreekColumn[] columns;
-	
+		
 	// Bitmaps objects
 	private Graphics graphic;
 	private BufferedImage buffer;
-	
 	private BufferedImage plate;
-	private BufferedImage credits;
-	private BufferedImage[] flammes;
+	private BufferedImage background;
+	private BufferedImage[] flames;
 	
 	// GameScreen methods
 	public GameScreen(Game gameobj) {
 		super();
-
-		// Associate the game object
 		this.game = gameobj;
-		buffer = new BufferedImage(RESO_X, RESO_Y, BufferedImage.TYPE_INT_ARGB);
-		graphic = buffer.getGraphics();
 		
-		// Create and dimension the window
-		setTitle("Strat game :");
-		setSize(RESO_X, RESO_Y);
+		// Create the background frame
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setUndecorated(true);
 		setResizable(false);
+		setTitle("On top of columns");		
 		
-		// Add a listener for early closing
+		// Respond to closing
 		addWindowListener(new WindowListener() {
 			public void windowOpened(WindowEvent arg0) {}
 			public void windowDeactivated(WindowEvent arg0) {}
@@ -88,48 +74,55 @@ public class GameScreen extends JDialog {
 			public void windowActivated(WindowEvent e) {}
 			public void windowIconified(WindowEvent e) {}
 			public void windowClosing(WindowEvent arg0) {
-				game.end();
+				game.stop();
 			}
 		});
 		
 		// Load the background images
 		try {
-			// Load flames
-			flammes = new BufferedImage[FLAMMES_NB];
-			for (int i = 0; i < FLAMMES_NB; i ++) {
-				flammes[i] = ImageIO.read(new File(flammePng + (i + 1) + ".png"));
+			flames = new BufferedImage[FLAMES_NB];
+			for (int i = 0; i < FLAMES_NB; i ++) {
+				flames[i] = ImageIO.read(new File(flamePng + (i + 1) + ".png"));
 			}
-			// Load plate image
 			plate = ImageIO.read(new File(platePng));
-			// Load credit screen
-			credits = ImageIO.read(new File(creditsPng));
+			background = ImageIO.read(new File(backgroundPng));
 		} catch (IOException io) {
 			System.out.println("GameScreen : unable to load some graphics "
 					+ io.getLocalizedMessage());
 		}
+
+		// Open the window
+		setContentPane(new JPanel());
+		setVisible(true);
 		
-		// Load the Greek columns
-		columns = new GreekColumn[GreekColumn.NB_COLUMNS];
-		for (int i = 0; i < GreekColumn.NB_COLUMNS; i ++) {
-			columns[i] = new GreekColumn(i);
-		}
+		// Allocate the double buffer 
+		buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+		graphic = buffer.getGraphics();
 	}
 	
 	// Window painting routine
-	public void paint(Graphics g) { 
-		// Draw the plate
-		Color color = new Color(0, 0, 0);
-		graphic.clearRect(0, 0, RESO_X, RESO_Y);
-		graphic.drawImage(plate, plateX, plateY, color, null);
+	public void paint(Graphics g) {
+		
+		int centerX = getWidth() / 2;
+		int centerY = getHeight() / 2;
+		
+		// Check for double buffer
+		if (buffer == null) return;
+		
+		// Draw the background
+		graphic.drawImage(background, 0, 0, getWidth(), getHeight(), 0, 0, background.getWidth(), background.getHeight(), null);
+
+		//Draw the plate
+		graphic.drawImage(plate, centerX - plate.getWidth() / 2, centerY - plate.getHeight() / 2, null);
 		
 		// Draw the animation
-		graphic.drawImage(flammes[flammeIndex], flammeX, flammeY, null);
-		flammeIndex = (flammeIndex + 1) % FLAMMES_NB; 
+		graphic.drawImage(flames[flameIndex], centerX - flames[0].getWidth() / 2, centerY - flames[0].getHeight() / 2, null);
+		flameIndex = (flameIndex + 1) % FLAMES_NB; 
 		
-		// Draw the player column
-		for (int i = 0; i < game.getNbPlayers(); i ++) {
-			Player player = game.getPlayer(i);
-			columns[i].paint(graphic, player.getStones());
+		// Draw the columns
+		for (int i = 0; i < game.getNbColumns(); i++) {
+			GreekColumn column = game.getColumn(i);
+			column.paint(this, graphic);
 		}
 		
 		// Update dialog

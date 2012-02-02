@@ -1,0 +1,121 @@
+package globalgamejam.org.strat;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.List;
+
+public class Olympe extends Thread {
+
+	// Internal objects
+	private List<Client> clients = null;
+
+	// Olympe attributes
+	private boolean running = false;
+	private boolean quitted = false;
+	
+	/**************************************************************************/
+	public Olympe(List<Client> clients) {
+		this.clients = clients;
+	}
+
+	/**************************************************************************/
+	public void start() {
+		running = true;
+		quitted = false;
+		super.start();
+	}
+
+	public void end(boolean quit) {
+		running = false;
+		quitted = quit;
+		try {
+			this.join();
+		} catch (Exception ex) {
+		}
+	}
+
+	/**************************************************************************/
+	public boolean isRunning() {
+		return running;
+	}
+	
+	public boolean isQuitted() {
+		return quitted;
+	}
+
+	/**************************************************************************/
+	public void run() {
+
+		// Create the connection screen
+		OlympeScreen screen = new OlympeScreen(this);
+		for (int iD = 0; iD < clients.size(); iD++) {
+			screen.addClient(Player.names[iD]);
+		}
+		
+		// Open the olympe listener socket
+		ServerSocket serverSocket;
+		try {
+			serverSocket = new ServerSocket(Server.SERVER_PORT);
+			serverSocket.setSoTimeout(Server.SERVER_TIMEOUT);
+			System.out.println("Olympe : listening on port = "
+					+ Server.SERVER_PORT);
+		} catch (IOException ex) {
+			System.out.println("Olympe : unable to open listener socket "
+					+ ex.getLocalizedMessage());
+			System.exit(-1);
+			return;
+		}
+
+		// Listen to client connections
+		while (running) {
+
+			// Check connection state
+			for (int iD = 0; iD < clients.size(); iD++) {
+				Client client = clients.get(iD);
+				if (!client.sensing()) {
+					screen.removeClient(iD);
+					clients.remove(iD);
+					System.out.println("Olympe : removing client iD = " + iD);
+					iD--;
+				}
+			}
+			
+			// Look for new connections
+			try {
+				Socket socket = serverSocket.accept();
+				socket.setSoTimeout(Server.SERVER_TIMEOUT);
+				if (clients.size() < Server.MAX_CLIENTS) {
+					// Store the new client
+					Client client = new Client(clients.size(), socket);
+					screen.addClient(Player.names[clients.size()]);
+					clients.add(client);
+					System.out.println("Olympe : adding client iD = "
+							+ (clients.size() - 1));
+				} else {
+					// Refuse the client
+					System.out
+							.println("Olympe : refusing client, server full !");
+					socket.close();
+				}
+			} catch (SocketTimeoutException to) {
+			} catch (Exception ex) {
+				System.out.println("Olympe : connection problem "
+						+ ex.getLocalizedMessage());
+			}
+		}
+
+		// Close the olympe socket
+		try {
+			serverSocket.close();
+			serverSocket = null;
+		} catch (IOException ex) {
+		}
+
+		// Close the interface
+		screen.close();
+		screen = null;
+		System.out.println("Olympe : closing port ");
+	}
+}
