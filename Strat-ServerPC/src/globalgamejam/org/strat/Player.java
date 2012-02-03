@@ -1,7 +1,7 @@
 /*
  * Strat-game PC-Server :
  * 
- * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
+ * Code : Frï¿½dï¿½ric Meslin, Florent Touchard, Benjamin Blois
  * Released on 29/01/12 at 15h00 for the 4th GGJ
  * 
  * This program and all its resources included is
@@ -76,7 +76,7 @@ public class Player {
 	}
 
 	public void setActions(int actions) {
-		actions = actions;
+		this.actions = actions;
 	}
 	
 	public int getActions() {

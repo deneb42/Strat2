@@ -1,7 +1,7 @@
 /*
  * Strat-game PC-Server :
  * 
- * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
+ * Code : Frï¿½dï¿½ric Meslin, Florent Touchard, Benjamin Blois
  * Released on 29/01/12 at 15h00 for the 4th GGJ
  * 
  * This program and all its resources included is
@@ -38,7 +38,7 @@ public class Game {
 	private static final int UPDATE_TIME = 60;
 
 	private static final int STONEDEC_PERIOD = 20000 / UPDATE_TIME;
-	private static final int ACTIONINC_PERIOD = 2000 / UPDATE_TIME;
+	private static final int ACTIONINC_PERIOD = 3000 / UPDATE_TIME;
 	private static final int BONUS_PERIOD = 10000 / UPDATE_TIME;
 	private static final int NORMAL_CHANCE = 50;
 	private static final int SPECIAL_CHANCE = 20;
@@ -51,11 +51,11 @@ public class Game {
 	private static final int PLUS_BONUS = 3;
 	private static final int SWITCH_BONUS = 4;
 
-	private static final int EMPTYACTION_COST = 6;
+	private static final int EMPTYACTION_COST = 4;
 	private static final int MINUS_COST = 4;
 	private static final int FILLACTION_COST = 2;
 	private static final int PLUS_COST = 2;	
-	private static final int SWITCH_COST = 8;
+	private static final int SWITCH_COST = 6;
 
 	// Game method
 	public Game() {
@@ -233,41 +233,23 @@ public class Game {
 		// Switch depending on the bonus
 		switch (bonus) {
 		case PLUS_BONUS:
-			// Check if gift is possible
-			if (pUser.getActions() < PLUS_COST) {
-				mutex.unlock();
-				return;
-			}
 			// Get one free stone
-			pTo.getColumn().addStones(4);
-			pUser.addActions(- PLUS_COST);
+			pTo.getColumn().addStones(2);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[to]
 					+ " get four blocks");
 			break;
 		case MINUS_BONUS:
-			// Check if gift is possible
-			if (pUser.getActions() < MINUS_COST) {
-				mutex.unlock();
-				return;
-			}
 			// Suppress one stone
-			pTo.getColumn().addStones(-4);
-			pUser.addActions(- MINUS_COST);
+			pTo.getColumn().addStones(-2);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[to]
 					+ " lost four blocks");
 			break;
 		case FILLACTION_BONUS:
-			// Check if gift is possible
-			if (pUser.getActions() < FILLACTION_COST) {
-				mutex.unlock();
-				return;
-			}
 			// Fill the action bar
-			pUser.addActions(- FILLACTION_COST);
 			pTo.setActions(Player.MAX_ACTIONS);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
@@ -275,13 +257,7 @@ public class Game {
 					+ " get full action bar");
 			break;
 		case EMPTYACTION_BONUS:
-			// Check if gift is possible
-			if (pUser.getActions() < EMPTYACTION_COST) {
-				mutex.unlock();
-				return;
-			}
 			// Empty one action bar
-			pUser.addActions(- EMPTYACTION_COST);
 			pTo.setActions(0);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
@@ -289,17 +265,11 @@ public class Game {
 					+ " lost is full action bar");
 			break;
 		case SWITCH_BONUS:
-			// Check if gift is possible
-			if (pUser.getActions() < SWITCH_COST) {
-				mutex.unlock();
-				return;
-			}
 			// Exchange the columns
 			GreekColumn temp = pTo.getColumn();
 			pTo.setColumn(pFrom.getColumn());
 			pFrom.setColumn(temp);
 			// Update action points
-			pUser.addActions(- SWITCH_COST);
 			sound.playSpecialBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[from]

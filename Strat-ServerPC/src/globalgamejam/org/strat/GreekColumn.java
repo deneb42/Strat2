@@ -1,7 +1,7 @@
 /*
  * Strat-game PC-Server :
  * 
- * Code : Frédéric Meslin, Florent Touchard, Benjamin Blois
+ * Code : Frï¿½dï¿½ric Meslin, Florent Touchard, Benjamin Blois
  * Released on 29/01/12 at 15h00 for the 4th GGJ
  * 
  * This program and all its resources included is
@@ -26,7 +26,7 @@ public class GreekColumn {
 	// Columns constants
 	public static final int NB_COLUMNS = 6;
 	public static final int NB_STONES = 10;
-	public static final int START_STONES = 1;
+	public static final int START_STONES = 6;
 	public static final int MAX_STONES = 10;
 
 	// Image resources
