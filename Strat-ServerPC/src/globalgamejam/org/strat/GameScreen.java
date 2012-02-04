@@ -48,10 +48,10 @@ public class GameScreen extends JFrame {
 	private Game game;
 		
 	// Bitmaps objects
-	private Graphics graphic;
-	private BufferedImage buffer;
-	private BufferedImage plate;
-	private BufferedImage background;
+	private Graphics graphic = null;
+	private BufferedImage buffer = null;
+	private BufferedImage plate = null;
+	private BufferedImage background = null;
 	private BufferedImage[] flames;
 	
 	// GameScreen methods
@@ -91,9 +91,10 @@ public class GameScreen extends JFrame {
 					+ io.getLocalizedMessage());
 		}
 
-		// Open the window
+		// Show the window
 		setContentPane(new JPanel());
 		setVisible(true);
+		repaint();
 	}
 	
 	// Window painting routine

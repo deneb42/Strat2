@@ -38,8 +38,8 @@ public class Game {
 	private static final int UPDATE_TIME = 60;
 
 	private static final int STONEDEC_PERIOD = 20000 / UPDATE_TIME;
-	private static final int ACTIONINC_PERIOD = 3000 / UPDATE_TIME;
-	private static final int BONUS_PERIOD = 10000 / UPDATE_TIME;
+	private static final int ACTIONINC_PERIOD = 6000 / UPDATE_TIME;
+	private static final int BONUS_PERIOD = 12000 / UPDATE_TIME;
 	private static final int NORMAL_CHANCE = 50;
 	private static final int SPECIAL_CHANCE = 20;
 	private static final int NB_BONUS = 5;
@@ -234,7 +234,7 @@ public class Game {
 		switch (bonus) {
 		case PLUS_BONUS:
 			// Get one free stone
-			pTo.getColumn().addStones(2);
+			pTo.getColumn().addStones(3);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[to]
@@ -242,7 +242,7 @@ public class Game {
 			break;
 		case MINUS_BONUS:
 			// Suppress one stone
-			pTo.getColumn().addStones(-2);
+			pTo.getColumn().addStones(-3);
 			sound.playNormalBonus();
 			System.out.println("Game : player " + Player.names[iD]
 					+ " use bonus : player " + Player.names[to]
@@ -328,6 +328,9 @@ public class Game {
 		
 		/**************************************************************************/
 		public void run() {
+			// Lock the mutex
+			mutex.lock();
+			
 			// Update the whole game
 			gameUpdateStonesActions();
 			gameUpdateBonus();
@@ -341,11 +344,11 @@ public class Game {
 			
 			// Check the game state
 			for (int i = 0; i < players.size(); i++) {
-				if (players.get(i).getColumn().isStonesEmpty()) {
+				if (players.get(i).getColumn().isStonesEmpty())
 					partying = false;
-					return;
-				}
 			}
+			// Unlock the mutex
+			mutex.unlock();
 		}
 		
 		private void gameUpdateStonesActions() {

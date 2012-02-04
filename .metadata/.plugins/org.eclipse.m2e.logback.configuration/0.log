@@ -1,2 +1,18 @@
 2012-02-02 23:14:07,156 [Worker-7] INFO  o.e.m.c.i.i.nexus.NexusIndexManager - Updating index for repository: central|http://repo1.maven.org/maven2
 2012-02-02 23:15:25,531 [Worker-7] INFO  o.e.m.c.i.i.nexus.NexusIndexManager - Updated index for repository: central|http://repo1.maven.org/maven2 in 78375 ms
+2012-02-03 21:10:49,656 [Worker-23] INFO  o.e.m.c.i.i.nexus.NexusIndexManager - Updating index for repository: central|http://repo1.maven.org/maven2
+2012-02-03 21:11:03,234 [Worker-23] ERROR o.e.m.c.i.i.nexus.NexusIndexManager - Unable to update index for central|http://repo1.maven.org/maven2: C:\Documents and Settings\Meslin Frédéric\.m2\repository\.cache\m2e\1.0.100\d9d714e11cb097b3ffcec91cccc65d3e\nexus-maven-repository-index.zip (Le fichier spécifié est introuvable)
+java.io.FileNotFoundException: C:\Documents and Settings\Meslin Frédéric\.m2\repository\.cache\m2e\1.0.100\d9d714e11cb097b3ffcec91cccc65d3e\nexus-maven-repository-index.zip (Le fichier spécifié est introuvable)
+	at java.io.FileInputStream.open(Native Method) ~[na:1.7.0_01]
+	at java.io.FileInputStream.<init>(Unknown Source) ~[na:1.7.0_01]
+	at org.apache.maven.index.updater.DefaultIndexUpdater$FileFetcher.retrieve(DefaultIndexUpdater.java:568) ~[indexer-core-3.1.0.jar:3.1.0]
+	at org.apache.maven.index.updater.DefaultIndexUpdater.loadIndexDirectory(DefaultIndexUpdater.java:206) ~[indexer-core-3.1.0.jar:3.1.0]
+	at org.apache.maven.index.updater.DefaultIndexUpdater.access$300(DefaultIndexUpdater.java:75) ~[indexer-core-3.1.0.jar:3.1.0]
+	at org.apache.maven.index.updater.DefaultIndexUpdater$LuceneIndexAdaptor.setIndexFile(DefaultIndexUpdater.java:645) ~[indexer-core-3.1.0.jar:3.1.0]
+	at org.apache.maven.index.updater.DefaultIndexUpdater.fetchAndUpdateIndex(DefaultIndexUpdater.java:844) ~[indexer-core-3.1.0.jar:3.1.0]
+	at org.apache.maven.index.updater.DefaultIndexUpdater.fetchAndUpdateIndex(DefaultIndexUpdater.java:156) ~[indexer-core-3.1.0.jar:3.1.0]
+	at org.eclipse.m2e.core.internal.index.nexus.NexusIndexManager.updateRemoteIndex(NexusIndexManager.java:1137) [org.eclipse.m2e.core_1.0.100.20110804-1717.jar:na]
+	at org.eclipse.m2e.core.internal.index.nexus.NexusIndexManager.updateIndex(NexusIndexManager.java:1081) [org.eclipse.m2e.core_1.0.100.20110804-1717.jar:na]
+	at org.eclipse.m2e.core.internal.index.nexus.NexusIndexManager$1.run(NexusIndexManager.java:658) [org.eclipse.m2e.core_1.0.100.20110804-1717.jar:na]
+	at org.eclipse.m2e.core.internal.index.nexus.IndexUpdaterJob.run(IndexUpdaterJob.java:71) [org.eclipse.m2e.core_1.0.100.20110804-1717.jar:na]
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54) [org.eclipse.core.jobs_3.5.100.v20110404.jar:na]

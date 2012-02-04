@@ -26,7 +26,7 @@ public class GreekColumn {
 	// Columns constants
 	public static final int NB_COLUMNS = 6;
 	public static final int NB_STONES = 10;
-	public static final int START_STONES = 6;
+	public static final int START_STONES = 10;
 	public static final int MAX_STONES = 10;
 
 	// Image resources
@@ -135,7 +135,7 @@ public class GreekColumn {
 
 		// Draw the avatar
 		if (avatar != null) {
-			double ray = ((stones + 4.0) / 14.0) * 350.0;
+			double ray = ((stones + 4.0) / 14.0) * 360.0;
 			x = (frame.getWidth() - avatar.getWidth()) / 2 + (int) (ray * vecX);
 			y = (frame.getHeight() - avatar.getHeight()) / 2 + (int) (ray * vecY);
 			g.drawImage(avatar, x, y, null);

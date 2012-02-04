@@ -24,8 +24,8 @@ import javax.imageio.ImageIO;
 public class Player {
 
 	// Player constants
-	public static final int START_ACTIONS = 4;
-	public static final int MAX_ACTIONS = 10;
+	public static final int START_ACTIONS = 2;
+	public static final int MAX_ACTIONS = 6;
 
 	// Player names and color
 	public static final String[] names = { "Demeter", "Zeus", "Artemis",
@@ -94,7 +94,7 @@ public class Player {
 	/**************************************************************************/
 	public void setColumn(GreekColumn column) {
 		this.column = column;
-		column.setAvatar(avatar);
+		//column.setAvatar(avatar);
 	}
 
 	public GreekColumn getColumn() {

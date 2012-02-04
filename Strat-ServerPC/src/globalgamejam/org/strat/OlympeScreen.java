@@ -106,6 +106,8 @@ public class OlympeScreen implements ActionListener {
 		// Show the GUI
 		background.setVisible(true);
 		dialog.setVisible(true);
+		background.repaint();
+		dialog.repaint();
 		
 		// Place the dialog
 		dialog.setLocation(dialog.getX() + background.getWidth() / 5,
